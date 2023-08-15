@@ -13,13 +13,22 @@ h2 {
 }
 
 article {
-  text-align: center;
-  border: 1px solid black;
+  background-color: white;
+  border: 1px solid #6c757d;
   padding: 5px;
   border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+article div {
+  text-align: center;
 }
 .product-description {
   font-size: x-small;
+  text-align: justify;
 }
 .buttons-container {
   display: flex;
@@ -34,10 +43,6 @@ article {
   text-transform: capitalize;
 }
 
-.selected {
-  background-color: darkred;
-  color: white;
-}
 .filtered-out {
   display: none;
 }
@@ -51,4 +56,15 @@ li.active a {
 }
 .collapse-with-delay {
   transition-delay: 200ms;
+}
+
+li a {
+  user-select: none;
+}
+.box-with-shadow {
+  transition: box-shadow 0.3s ease;
+}
+
+.box-with-shadow:hover {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }

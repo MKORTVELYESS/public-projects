@@ -232,13 +232,15 @@ function render(arrProducts) {
   container.innerHTML = "";
   arrProducts.forEach((product) => {
     const article = document.createElement("article");
+    article.classList.add("box-with-shadow");
     article.dataset.productCategory = product.category;
     const strArticleInnerHTML = `
         <h2 class="product-name">${product.title}</h2>
         <img class="product-img" src="${product.image}"/>
+        <p class="product-description">Description: ${product.description}</p>
+        <div>
         <p class="product-category">Category: ${product.category}</p>
-        <p class="product-price">Price: ${product.price} USD</p>
-        <p class="product-description">Description: ${product.description}</p>`;
+        <p class="product-price">Price: ${product.price} USD</p></div>`;
     article.innerHTML = strArticleInnerHTML;
     container.appendChild(article);
   });
@@ -302,7 +304,7 @@ function drawCategories2(arrCategories) {
         }
       });
 
-      //Get name of selected category from the button that has class "selected"
+      //Get name of selected category from the button that has class "active"
       let selectedCategory;
       allButtons.forEach((button) => {
         if (Array.from(button.classList).indexOf("active") > -1) {
@@ -310,7 +312,7 @@ function drawCategories2(arrCategories) {
         }
       });
 
-      render(shopData); //render was developed with container.innerHTML =""
+      render(shopData); //render was enhanced with container.innerHTML ="" to remove all elements before rerunning
 
       //Handle produtcts that are not selected by applying a class to them that will make them display =none
       if (selectedCategory != undefined) {
@@ -327,8 +329,6 @@ function drawCategories2(arrCategories) {
 }
 
 // drawCategories2(getUniqueCategories(shopData));
-
-// 8. Feladat
 
 //fetch shopData from API
 const url = "https://fakestoreapi.com/products";
