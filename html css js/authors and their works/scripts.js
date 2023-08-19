@@ -57,3 +57,35 @@ async function renderAuthorCard(author) {
       </div>`;
   resultsContainer.insertAdjacentHTML("beforeend", cardHTML);
 }
+
+async function showWorks(key, author) {
+  //Find modal elements
+  const modal = new bootstrap.Modal(document.getElementById("myModal"));
+  const modalBody = document.querySelector(".modal-body");
+  const modalHeader = document.querySelector(".modal-title");
+
+  //Reset current modal contents before loading new data
+  modalBody.innerHTML = "";
+
+  //Create url for fetching the works of the author by the unique key stored in the HTML
+  const url = `https://openlibrary.org/authors/${key}/works.json`;
+  let response = await fetch(url);
+  response = await response.json();
+
+  const works = response.entries;
+
+  //Create a list of the authors works
+  let ul = document.createElement("ul");
+  ul.classList.add("list-group"); //Add classes for styling
+  works.forEach((work) => {
+    let li = document.createElement("li");
+    li.classList.add("list-group-item");
+    li.textContent = work.title;
+    ul.appendChild(li);
+  });
+
+  modalBody.appendChild(ul); //Add the newly created list to the modal body
+  modalHeader.textContent = `Works of ${author}`; //Modal header to sepify name of the author
+
+  modal.show(); //Show the modal, using bootstrap js
+}
