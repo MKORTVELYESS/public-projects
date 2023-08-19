@@ -1,0 +1,27 @@
+.container.author-search {
+  max-width: 750px;
+}
+
+.card {
+  height: 500px;
+}
+
+@media (max-width: 760px) {
+  .card {
+    height: unset;
+    max-width: 300px;
+  }
+}
+
+@media (min-width: 750px) and (max-width: 999px) {
+  .custom-modal-dialog {
+    min-width: 90%;
+  }
+}
+
+@media (min-width: 1000px) {
+  .custom-modal-dialog {
+    width: 80%;
+    max-width: 800px;
+  }
+}
