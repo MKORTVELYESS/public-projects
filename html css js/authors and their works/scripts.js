@@ -58,9 +58,9 @@ async function renderAuthorCard(author) {
   resultsContainer.insertAdjacentHTML("beforeend", cardHTML);
 }
 
+const modal = new bootstrap.Modal(document.getElementById("myModal"));
 async function showWorks(key, author) {
   //Find modal elements
-  const modal = new bootstrap.Modal(document.getElementById("myModal"));
   const modalBody = document.querySelector(".modal-body");
   const modalHeader = document.querySelector(".modal-title");
 
@@ -89,3 +89,11 @@ async function showWorks(key, author) {
 
   modal.show(); //Show the modal, using bootstrap js
 }
+
+//Find close buttons on the modal and handle the hide event of the modal.
+const modalCloseButtons = document.querySelectorAll(".modal-content button");
+modalCloseButtons.forEach((btn) => {
+  btn.addEventListener("click", function hideModal() {
+    modal.hide();
+  });
+});
