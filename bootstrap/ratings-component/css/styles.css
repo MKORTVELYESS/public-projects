@@ -1,0 +1,57 @@
+:root {
+  --bs-breakpoint-xs: 0;
+  --bs-breakpoint-sm: 576px;
+  --bs-breakpoint-md: 768px;
+  --bs-breakpoint-lg: 993px;
+  --bs-breakpoint-xl: 1200px;
+  --bs-breakpoint-xxl: 1400px;
+}
+
+@media (min-width: 576px) {
+  .container {
+    width: var(--bs-breakpoint-sm);
+  }
+}
+
+/* xs screens */
+@media (max-width: 576px) {
+  html {
+    font-size: 0.75rem;
+  }
+}
+
+/* s screens */
+@media (min-width: 577px) and (max-width: 768px) {
+  html {
+    font-size: 1rem;
+  }
+}
+
+/* md screens */
+
+@media (min-width: 769px) and (max-width: 993px) {
+  html {
+    font-size: 1rem;
+  }
+}
+
+/* lg screens */
+@media (min-width: 994px) and (max-width: 1200px) {
+  html {
+    font-size: 1rem;
+  }
+}
+
+/* xl screens */
+@media (min-width: 1201px) and (max-width: 1400px) {
+  html {
+    font-size: 1rem;
+  }
+}
+
+/* xxl screens */
+@media (min-width: 1401px) {
+  html {
+    font-size: 1rem;
+  }
+}
