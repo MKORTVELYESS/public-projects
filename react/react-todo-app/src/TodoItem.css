@@ -1,0 +1,16 @@
+.todo-item {
+  border: var(--bs-border-width) solid var(--bs-border-color);
+  height: fit-content;
+  margin: auto;
+  max-width: var(--bs-breakpoint-md);
+  transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out;
+}
+
+.btn.btn-danger {
+  border-start-start-radius: unset;
+  border-end-start-radius: unset;
+}
+div.todo-item.selected {
+  background-color: var(--bs-teal);
+  color: white;
+}

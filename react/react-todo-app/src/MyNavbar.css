@@ -1,0 +1,20 @@
+@media (min-width: 768px) {
+  .navbar-nav {
+    width: 100%;
+  }
+
+  div.dropdown-menu[data-bs-popper] {
+    left: unset;
+    right: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .dropdown {
+    margin-left: unset !important;
+  }
+  div.dropdown-menu.show {
+    width: fit-content;
+    margin: auto;
+  }
+}
