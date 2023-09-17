@@ -1,29 +1,40 @@
 import { MDBCheckbox } from "mdb-react-ui-kit";
 import React, { useEffect, useRef, useState } from "react";
 import "./TodoItem.css";
-const TodoItem = ({ text, isDone, onDelete }) => {
-  const parentRef = useRef(null);
+const TodoItem = ({ text, isDone, onDelete, onToggle }) => {
+  const pRef = useRef(null);
   const [buttonHeight, setButtonHeight] = useState("auto");
-  const [isChecked, setIsChecked] = useState(isDone);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-  function toggleChecked() {
-    setIsChecked(!isChecked);
-  }
+  useEffect(() => {
+    // Function to update window width in state
+    const handleWindowResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    // Add event listener for window resize
+    window.addEventListener("resize", handleWindowResize);
+
+    // Clean up the event listener when the component unmounts
+    return () => {
+      window.removeEventListener("resize", handleWindowResize);
+    };
+  }, []);
 
   useEffect(() => {
     //Handles Delete button resizeing in case its parent container grows  due to Todod text being broken into multipl lines
-    const parentElement = parentRef.current;
-    if (parentElement) {
-      const parentHeight = parentElement.clientHeight;
-      setButtonHeight(parentHeight + "px");
+    const pElement = pRef.current;
+    if (pElement) {
+      const pHeight = pElement.offsetHeight;
+      const newButtonHeight = Math.max(pHeight, 40);
+      setButtonHeight(newButtonHeight + "px");
     }
-  }, []);
+  }, [windowWidth]);
 
   return (
     <div
-      ref={parentRef}
       className={`d-flex align-items-center ps-2 justify-content-between todo-item rounded my-2 ${
-        isChecked ? "selected" : null
+        isDone ? "selected" : null
       }`}
     >
       <MDBCheckbox
@@ -31,11 +42,13 @@ const TodoItem = ({ text, isDone, onDelete }) => {
         id="inlineCheckbox1"
         value="option1"
         label=""
-        onChange={toggleChecked}
-        checked={isChecked}
+        onChange={onToggle}
+        checked={isDone}
         inline
       />
-      <p className="my-auto">{text}</p>
+      <p ref={pRef} className="my-auto">
+        {text}
+      </p>
       <div className={`d-flex button-container`}>
         <button
           onClick={onDelete}

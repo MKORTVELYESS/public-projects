@@ -9,18 +9,6 @@ const MainContainer = () => {
   const arrTodos = useContext(TodoItemsContext);
   const setArrTodos = useContext(TodoItemsDispatchContext);
 
-  // const [arrTodos, setArrTodos] = useState([
-  //   {
-  //     id: 1,
-  //     text: "Clean the Kitchen",
-  //     isDone: false,
-  //   },
-  //   { id: 2, text: "Wash the Dishes", isDone: false },
-  //   { id: 3, text: "Feed the dog", isDone: true },
-  //   { id: 4, text: "Study for the exam", isDone: false },
-  //   { id: 5, text: "Buy plane tickets", isDone: false },
-  // ]);
-
   const [maxID, setMaxID] = useState(getMaxID());
 
   const [errorMsg, setErrorMsg] = useState(null);
@@ -53,12 +41,22 @@ const MainContainer = () => {
     }
   }
 
+  function toggleItemState(id) {
+    const newTodos = arrTodos.map((item) => {
+      if (item.id == id) {
+        return { ...item, isDone: !item.isDone };
+      } else {
+        return item;
+      }
+    });
+    setArrTodos(newTodos);
+  }
   return (
     <div className="container mt-3 mt-md-5 pt-md-5">
       <h1>Add a new Todo:</h1>
       <TextInput onAdd={createNewTodo} />
       <p className="text-danger">{errorMsg}</p>
-      <TodoContainer onDelete={deleteTodo} todos={arrTodos} />
+      <TodoContainer onDelete={deleteTodo} onToggleTodo={toggleItemState} />
     </div>
   );
 };

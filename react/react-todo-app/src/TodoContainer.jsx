@@ -1,14 +1,21 @@
 import TodoItem from "./TodoItem";
-const TodoContainer = ({ todos, onDelete }) => {
+import { TodoItemsContext } from "./TodoItemsContext";
+import { useContext } from "react";
+const TodoContainer = ({ onDelete, onToggleTodo }) => {
+  const arrTodos = useContext(TodoItemsContext);
+
   return (
     <div className="mb-5">
-      {todos.map((todo) => {
+      {arrTodos.map((todo) => {
         return (
           <TodoItem
             text={todo.text}
             isDone={todo.isDone}
             onDelete={() => {
               onDelete(todo.id);
+            }}
+            onToggle={() => {
+              onToggleTodo(todo.id);
             }}
             key={`Todo-${todo.id}`}
           />
