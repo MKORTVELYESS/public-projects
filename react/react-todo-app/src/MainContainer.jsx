@@ -1,34 +1,29 @@
 import TextInput from "./TextInput.jsx";
 import TodoContainer from "./TodoContainer.jsx";
 import { useState } from "react";
+import { useContext } from "react";
+import { TodoItemsContext } from "./TodoItemsContext.jsx";
+import { TodoItemsDispatchContext } from "./TodoItemsDispatchContext.jsx";
 
 const MainContainer = () => {
-  const [arrTodos, setArrTodos] = useState([
-    {
-      id: 1,
-      text: "Clean the Kitchen",
-      isDone: false,
-    },
-    { id: 2, text: "Wash the Dishes", isDone: false },
-    { id: 3, text: "Feed the dog", isDone: true },
-    { id: 4, text: "Study for the exam", isDone: false },
-    { id: 5, text: "Buy plane tickets", isDone: false },
-  ]);
+  const arrTodos = useContext(TodoItemsContext);
+  const setArrTodos = useContext(TodoItemsDispatchContext);
+
+  // const [arrTodos, setArrTodos] = useState([
+  //   {
+  //     id: 1,
+  //     text: "Clean the Kitchen",
+  //     isDone: false,
+  //   },
+  //   { id: 2, text: "Wash the Dishes", isDone: false },
+  //   { id: 3, text: "Feed the dog", isDone: true },
+  //   { id: 4, text: "Study for the exam", isDone: false },
+  //   { id: 5, text: "Buy plane tickets", isDone: false },
+  // ]);
 
   const [maxID, setMaxID] = useState(getMaxID());
 
   const [errorMsg, setErrorMsg] = useState(null);
-
-  // function setAllDone() {
-  //   const newTodods = arrTodos.map(() => {
-  //     return {
-  //       id: arrTodos.id,
-  //       text: arrTodos.text,
-  //       isDone: ture,
-  //     };
-  //   });
-  //   setArrTodos(newTodods);
-  // }
 
   function getMaxID() {
     return arrTodos.reduce((acc, curr) => {
