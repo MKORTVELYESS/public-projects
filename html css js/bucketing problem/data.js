@@ -1,155 +1,110 @@
+class Tank {
+  constructor(
+    id,
+    name,
+    programme,
+    country,
+    afolu,
+    vintage,
+    maxQty,
+    currentQty,
+    contents
+  ) {
+    this.id = id;
+    this.name = name;
+    this.programme = programme;
+    this.country = country;
+    this.afolu = afolu;
+    this.vintage = vintage;
+    this.maxQty = maxQty;
+    this.currentQty = currentQty;
+    this.contents = contents;
+  }
+
+  load(projObj) {
+    this.contents.push(projObj);
+    this.currentQty += projObj.qty;
+    if (this.currentQty === this.maxQty) {
+      Object.freeze(this);
+    }
+  }
+  unload() {}
+  remainingCapacity() {
+    return this.maxQty - this.currentQty;
+  }
+  isFull() {
+    return this.maxQty === this.currentQty;
+  }
+  isOverflow() {
+    return this.maxQty < this.currentQty;
+  }
+  isEmpty() {
+    return this.currentQty === 0;
+  }
+  projects() {
+    const IDlist = this.contents.map((proj) => {
+      return proj.id;
+    });
+    uniqueIDList = IDlist.map((projID, index, arr) => {
+      if (arr.indexOf(projID) === index) {
+        return projID;
+      }
+    });
+  }
+}
+
 export const tanks = [
-  {
-    id: 1,
-    name: "ACR_US_TECH_2019",
-    programme: "ACR",
-    country: "US",
-    afolu: "TECH",
-    vintage: "2019",
-    maxQty: 250000,
-    currentQty: 0,
-    remainingCapacity: null,
-    setRemainingCapacity: function () {
-      this.remainingCapacity = this.maxQty - this.currentQty;
-    },
-    contents: [],
-  },
-  {
-    id: 2,
-    name: "ACR_US_TECH_2021",
-    programme: "ACR",
-    country: "US",
-    afolu: "TECH",
-    vintage: "2021",
-    maxQty: 983472,
-    currentQty: 0,
-    remainingCapacity: null,
-    setRemainingCapacity: function () {
-      this.remainingCapacity = this.maxQty - this.currentQty;
-    },
-    contents: [],
-  },
-  {
-    id: 3,
-    name: "CAR_US_TECH_2010",
-    programme: "CAR",
-    country: "US",
-    afolu: "TECH",
-    vintage: "2010",
-    maxQty: 9000,
-    currentQty: 0,
-    remainingCapacity: null,
-    setRemainingCapacity: function () {
-      this.remainingCapacity = this.maxQty - this.currentQty;
-    },
-    contents: [],
-  },
-  {
-    id: 4,
-    name: "VCS_BD_METHR_2019",
-    programme: "VCS",
-    country: "BD",
-    afolu: "METHR",
-    vintage: "2019",
-    maxQty: 83509,
-    currentQty: 0,
-    remainingCapacity: null,
-    setRemainingCapacity: function () {
-      this.remainingCapacity = this.maxQty - this.currentQty;
-    },
-    contents: [],
-  },
+  new Tank(1, "ACR_US_TECH_2019", "ACR", "US", "TECH", "2019", 250000, 0, []),
+  new Tank(2, "ACR_US_TECH_2021", "ACR", "US", "TECH", "2021", 983472, 0, []),
+  new Tank(3, "CAR_US_TECH_2010", "CAR", "US", "TECH", "2010", 9000, 0, []),
+  new Tank(4, "VCS_BD_METHR_2019", "VCS", "BD", "METHR", "2019", 83509, 0, []),
 ];
 
+class Holding {
+  constructor(
+    symbol,
+    vintage,
+    programme,
+    qty,
+    country,
+    possibleTanks = [],
+    tank = null,
+    id = undefined
+  ) {
+    this.symbol = symbol;
+    this.vintage = vintage;
+    this.programme = programme;
+    this.qty = qty;
+    this.country = country;
+    this.possibleTanks = possibleTanks;
+    this.tank = tank;
+    this.id = id;
+  }
+  loadInto(tankObj) {
+    this.tank = tankObj;
+    Object.freeze(this);
+  }
+  isLoaded() {
+    return tank !== null;
+  }
+  isAmbiguos() {
+    return this.possibleTanks.length > 1;
+  }
+  isDefinitive() {
+    return this.possibleTanks.length === 1;
+  }
+  isUncategorizable() {
+    return this.possibleTanks.length === 0;
+  }
+}
+
 export const inventory = [
-  {
-    symbol: "12488AFD37",
-    vintage: "2019",
-    programme: "ACR",
-    qty: 250000,
-    country: "US",
-    possibleTanks: [1, 2],
-    isInTank: false,
-  },
-  {
-    symbol: "12489AFD37",
-    vintage: "2021",
-    programme: "ACR",
-    qty: 100000,
-    country: "US",
-    possibleTanks: [2, 3],
-    isInTank: false,
-  },
-  {
-    symbol: "12490AFD37",
-    vintage: "2021",
-    programme: "ACR",
-    qty: 200000,
-    country: "US",
-    possibleTanks: [2, 1],
-    isInTank: false,
-  },
-  {
-    symbol: "12491AFD37",
-    vintage: "2021",
-    programme: "ACR",
-    qty: 100000,
-    country: "US",
-    possibleTanks: [1, 3],
-    isInTank: false,
-  },
-  {
-    symbol: "12492AFD37",
-    vintage: "2021",
-    programme: "ACR",
-    qty: 100000,
-    country: "US",
-    possibleTanks: [2, 4],
-    isInTank: false,
-  },
-  {
-    symbol: "12493AFD37",
-    vintage: "2021",
-    programme: "ACR",
-    qty: 183472,
-    country: "US",
-    possibleTanks: [3, 4],
-    isInTank: false,
-  },
-  {
-    symbol: "12494AFD37",
-    vintage: "2021",
-    programme: "ACR",
-    qty: 100000,
-    country: "US",
-    possibleTanks: [],
-    isInTank: false,
-  },
-  {
-    symbol: "12495AFD37",
-    vintage: "2021",
-    programme: "ACR",
-    qty: 200000,
-    country: "US",
-    possibleTanks: [],
-    isInTank: false,
-  },
-  {
-    symbol: "12496AFD37",
-    vintage: "2010",
-    programme: "CAR",
-    qty: 9000,
-    country: "US",
-    possibleTanks: [],
-    isInTank: false,
-  },
-  {
-    symbol: "12497AFD37",
-    vintage: "2019",
-    programme: "VCS",
-    qty: 83509,
-    country: "BD",
-    possibleTanks: [],
-    isInTank: false,
-  },
+  new Holding("12488AFD37", "2019", "ACR", 250000, "US"),
+  new Holding("12489AFD37", "2021", "ACR", 100000, "US"),
+  new Holding("12490AFD37", "2021", "ACR", 200000, "US"),
+  new Holding("12491AFD37", "2021", "ACR", 100000, "US"),
+  new Holding("12492AFD37", "2021", "ACR", 100000, "US"),
+  new Holding("12493AFD37", "2021", "ACR", 183472, "US"),
+  new Holding("12496AFD37", "2010", "ACR", 9000, "US"),
+  new Holding("12497AFD37", "2019", "VCS", 83509, "BD"),
 ];
