@@ -96,6 +96,55 @@ class Holding {
   isUncategorizable() {
     return this.possibleTanks.length === 0;
   }
+  isAllowed(tank, comparisonMode) {
+    switch (comparisonMode) {
+      case "strict":
+        // code block
+        break;
+      case "no country":
+        // code block
+        break;
+      case "no vintage":
+        // code block
+        break;
+      case "no vintage no country":
+        // code block
+        break;
+      default:
+      // code block
+    }
+  }
+  allowedInTanks(tanksArr) {
+    let allowedTanksList = [];
+
+    const getAllowedTanksList = (mode) => {
+      allowedTanksList = tanksArr.map((tank) => {
+        if (this.isAllowed(tank, mode)) {
+          return tank;
+        }
+      });
+      return allowedTanksList;
+    };
+    //Strict with vintage and country
+    if (this.isUncategorizable()) {
+      allowedTanksList = getAllowedTanksList("strict");
+    }
+    //Without country
+    if (this.isUncategorizable()) {
+      allowedTanksList = getAllowedTanksList("no country");
+    }
+    //Without vintage
+    if (this.isUncategorizable()) {
+      allowedTanksList = getAllowedTanksList("no vintage");
+    }
+    //Without vintage and country
+
+    if (this.isUncategorizable()) {
+      allowedTanksList = getAllowedTanksList("no vintage no country");
+    }
+
+    return allowedTanksList;
+  }
 }
 
 export const inventory = [
