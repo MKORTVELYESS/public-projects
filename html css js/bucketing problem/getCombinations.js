@@ -1,5 +1,5 @@
 export function getCombinations(n, arr) {
-  const result = [];
+  let result = [];
   for (let k = 1; k <= n; k++) {
     const kCombinations = combinations(arr, k);
     result.push(kCombinations);

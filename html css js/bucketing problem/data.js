@@ -54,10 +54,18 @@ class Tank {
 }
 
 export const tanks = [
-  new Tank(1, "ACR_US_TECH_2019", "ACR", "US", "TECH", "2019", 250000, 0, []),
-  new Tank(2, "ACR_US_TECH_2021", "ACR", "US", "TECH", "2021", 983472, 0, []),
-  new Tank(3, "CAR_US_TECH_2010", "CAR", "US", "TECH", "2010", 9000, 0, []),
-  new Tank(4, "VCS_BD_METHR_2019", "VCS", "BD", "METHR", "2019", 83509, 0, []),
+  new Tank(1, "VCS_CN_METHR_2021", "VCS", "CN", "METHR", "2021", 373182, 0, []),
+  new Tank(
+    2,
+    "VCS_CN_METHR_2021_GEO",
+    "VCS",
+    "CN",
+    "METHR",
+    "2021",
+    610492,
+    0,
+    []
+  ),
 ];
 
 class Holding {
@@ -148,12 +156,12 @@ class Holding {
 }
 
 export const inventory = [
-  new Holding("12488AFD37", "2019", "ACR", 250000, "US"),
-  new Holding("12489AFD37", "2021", "ACR", 100000, "US"),
-  new Holding("12490AFD37", "2021", "ACR", 200000, "US"),
-  new Holding("12491AFD37", "2021", "ACR", 100000, "US"),
-  new Holding("12492AFD37", "2021", "ACR", 100000, "US"),
-  new Holding("12493AFD37", "2021", "ACR", 183472, "US"),
-  new Holding("12496AFD37", "2010", "ACR", 9000, "US"),
-  new Holding("12497AFD37", "2019", "VCS", 83509, "BD"),
+  new Holding("1", "2021", "VCS", 105312, "CN"),
+  new Holding("2", "2021", "VCS", 190000, "CN"),
+  new Holding("3", "2021", "VCS", 181438, "CN"),
+  new Holding("4", "2021", "VCS", 140851, "CN"),
+  new Holding("5", "2021", "VCS", 50000, "CN"),
+  new Holding("6", "2021", "VCS", 167202, "CN"),
+  new Holding("7", "2021", "VCS", 77148, "CN"),
+  new Holding("8", "2021", "VCS", 71723, "CN"),
 ];

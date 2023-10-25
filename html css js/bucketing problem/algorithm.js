@@ -6,7 +6,7 @@ function calcReamainingCapacity() {
     tank.setRemainingCapacity();
   });
 }
-
+//
 function findPossibleTanks(changeDone) {
   inventory.forEach((project) => {
     project.allowedInTanks(tanks);
@@ -69,4 +69,9 @@ function getTotalQtyOfProjectList(list) {
 console.log(getAllPossibleProjectsForTank(1));
 console.log(getTotalQtyOfProjectList(getAllPossibleProjectsForTank(1)));
 function overfillTank(tank, totalQty) {}
-const allCombinations = getCombinations(inventory.length, inventory);
+let allCombinations = getCombinations(inventory.length, inventory);
+console.log(allCombinations);
+const tankCombination = allCombinations.filter((item) => {
+  return Math.abs(item.combinationTotal - 373182) < 500;
+});
+console.log(tankCombination);
