@@ -6,30 +6,23 @@ function getPostText(post) {
   const text = post.text;
   const content = text.substring(0, endChar);
 
-  if (post._attrs.role == "article") {
-    const cleanContent = content
+  const cleanContent = removeWhiteSpace(
+    content
       .replaceAll("Facebook", "")
-      .replaceAll("Láthatóság: Az Eladó színházjegy csoport tagjai", "");
+      .replaceAll("Láthatóság: Az Eladó színházjegy csoport tagjai", "")
+  );
 
-    return cleanContent;
-  } else {
-    const authorText = removeWhiteSpace(getAuthor(post).text);
-    const postText = removeWhiteSpace(content).replaceAll(
-      "Láthatóság: Az Eladó színházjegy csoport tagjai",
-      ""
-    );
-    return authorText + " " + postText;
-  }
+  return cleanContent;
 }
 
 function removeWhiteSpace(string) {
-  return string.replace(/\s+/g, " ").trim().replace(";", ",");
+  return string.replace(/\s+/g, " ").trim().replaceAll(";", ",");
 }
 
-function getAuthor(post) {
-  if (post._attrs.role !== "article") {
-    return post.parentNode.previousElementSibling;
-  }
-}
+// function getAuthor(post) {
+//   if (post._attrs.role !== "article") {
+//     return post.parentNode.previousElementSibling;
+//   }
+// }
 
 export default getPostText;
