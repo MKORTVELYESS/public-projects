@@ -17,8 +17,6 @@ const postTextsNew = postTextsFull.slice(
   help.getLastPostIndex(postTextsFull)
 );
 postTextsNew.pop();
+
 help.saveResult(postTextsNew, constant.$PROMPT, constant.$LIMIT);
-help.saveLastPost(
-  constant.$LAST_FILEPATH,
-  postTextsFull[help.getLastPostIndex(postTextsFull)]
-);
+help.saveLastPost(constant.$LAST_FILEPATH, postTextsFull[0]);
