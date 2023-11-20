@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import { format } from "date-fns";
 import * as constant from "./constants.js";
 export function saveLastPost(lastPostPath, lastPostText) {
   fs.writeFileSync(lastPostPath, lastPostText);
@@ -37,4 +38,9 @@ export function cleanupResults(folderPath) {
     const filePath = path.join(folderPath, file);
     fs.unlinkSync(filePath);
   });
+}
+
+export function getDate() {
+  const today = new Date();
+  return format(today, "yyyy-MM-dd");
 }
