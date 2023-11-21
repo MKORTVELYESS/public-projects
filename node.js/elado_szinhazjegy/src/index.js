@@ -1,8 +1,10 @@
 import fs from "node:fs";
-import getPosts from "./getPosts.js";
-import getPostText from "./getPostText.js";
-import * as help from "./helpers.js";
-import * as constant from "./constants.js";
+import getPosts from "./services/getPosts.js";
+import getPostText from "./services/getPostText.js";
+import * as help from "./utils/helpers.js";
+import * as constant from "./utils/constants.js";
+
+help.cleanupResults(constant.$RESULT_FOLDER);
 
 const data = fs.readFileSync(constant.$FEED_FILEPATH);
 

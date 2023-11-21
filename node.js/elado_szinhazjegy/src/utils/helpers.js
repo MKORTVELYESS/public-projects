@@ -1,11 +1,12 @@
 import fs from "node:fs";
 import { format } from "date-fns";
 import * as constant from "./constants.js";
+import path from "node:path";
 export function saveLastPost(lastPostPath, lastPostText) {
   fs.writeFileSync(lastPostPath, lastPostText);
 }
 export function getLastPostIndex(currentPostList) {
-  const lastPostText = fs.readFileSync(constant.$LAST_FILEPATH);
+  const lastPostText = fs.readFileSync(constant.$LAST_FILEPATH, "utf-8");
   const result = currentPostList.findIndex((item) =>
     item.includes(lastPostText)
   );
