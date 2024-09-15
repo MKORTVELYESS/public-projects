@@ -1,0 +1,6 @@
+^echo\b
+^date\b
+^ls\b
+^whoami\b
+^man date\b
+
