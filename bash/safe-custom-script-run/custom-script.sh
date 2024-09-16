@@ -41,7 +41,7 @@ is_cmd_whitelisted() {
     local allow_list="$2"
     
     #Shell special characters like ; || && > should be disallowed for security
-    if [[ ! "$cmd" =~ ^[a-zA-Z0-9_\ \/\.-]+$ ]] ; then
+    if [[ ! "$cmd" =~ ^[a-zA-Z0-9_:=,\ \/\"\'\.-]+$ ]] ; then
     	echo "Special characters are not allowed in $cmd"
     	exit 1
     fi
@@ -59,7 +59,7 @@ is_cmd_whitelisted() {
     done < "$allow_list"
     
     #If cmd did not match any regex --> not allowed
-    echo "$cmd not allowed"
+    echo "$cmd not whitelisted"
     return 1
 }
 

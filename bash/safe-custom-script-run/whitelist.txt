@@ -3,4 +3,6 @@
 ^ls\b
 ^whoami\b
 ^man date\b
+^kuu\b
+^Sys.env=QA, \b
 

@@ -2,4 +2,5 @@ whoami
 date
 ls -lart
 man date
-
+kuu hello_bello -- "what is my goal" ./src/scripts/file.sh
+Sys.env=QA, Sys.backup=DEV scp hostinfo01:/var/tmp/file.txt /var/documents
