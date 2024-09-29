@@ -1,5 +1,6 @@
 //call to achieve dynamic flagging of commands like
-    // ./gradlew sitePreparation -PsiteClearanceFlags="-d 2024-09-28" -PlandSurveyFlags="--date 2024.09.28" -PsitePreparationFlags="-D 20240928"
+// ./gradlew sitePreparation -PsiteClearanceFlags="-d 2024-09-28" -PlandSurveyFlags="--date 2024.09.28" -PsitePreparationFlags="-D 20240928"
+// Exclude some tasks which would normally be triggered by dependency: ./gradlew sitePreparation -x siteClearance -PsiteClearanceFlags="-d 2024-09-28" -PlandSurveyFlags="--date 2024.09.28" -PsitePreparationFlags="-D 20240928"
 
 abstract class FlaggedTask : DefaultTask() {
     @Input // Shared property for all tasks to use, needs to marked as input https://docs.gradle.org/8.10/userguide/validation_problems.html#missing_annotation
@@ -12,6 +13,7 @@ val sitePreparation by tasks.registering(FlaggedTask::class) {//If paralellism w
         println("Site preparation in progress: Land surveying and site clearance for ${flagsProvider.getOrElse("")}")
     }
 }
+
 val landSurvey by tasks.registering(FlaggedTask::class) {//Takes 11 seconds
     doLast {
         println("Land survey started ${flagsProvider.getOrElse("")}")
