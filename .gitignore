@@ -1,0 +1,5 @@
+input
+output
+node_modules
+.env
+gradle/parallel-dynamic-grade-project/.gradle
