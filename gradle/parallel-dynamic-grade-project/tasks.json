@@ -1,0 +1,25 @@
+{
+  "tasks": [
+    {
+      "name": "sitePreparation",
+      "taskType": "FlaggedTask",
+      "dependsOn": [
+        "landSurvey",
+        "siteClearance"
+      ],
+      "action": "echo"
+    },
+    {
+      "name": "landSurvey",
+      "taskType": "FlaggedTask",
+      "dependsOn": [],
+      "action": "ping"
+    },
+    {
+      "name": "siteClearance",
+      "taskType": "FlaggedTask",
+      "dependsOn": [],
+      "action": "ping"
+    }
+  ]
+}
