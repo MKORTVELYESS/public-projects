@@ -5,6 +5,8 @@ import { BannerComponent } from './banner/banner.component';
 import { FeaturesComponent } from './features/features.component';
 import { MainComponent } from './main/main.component';
 import { FooterComponent } from './footer/footer.component';
+import { RouterModule } from '@angular/router';
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -15,6 +17,7 @@ import { FooterComponent } from './footer/footer.component';
     FeaturesComponent,
     MainComponent,
     FooterComponent,
+    RouterModule,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
