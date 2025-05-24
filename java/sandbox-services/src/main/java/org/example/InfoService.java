@@ -1,6 +1,8 @@
 package org.example;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.example.util.DateTimeUtil;
+import org.example.util.SystemTimeSource;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
@@ -9,8 +11,14 @@ import java.time.format.DateTimeFormatter;
 @Service
 public class InfoService {
 
+    private final SystemTimeSource time;
+
+    public InfoService(SystemTimeSource systemTimeSource){
+        this.time = systemTimeSource;
+    }
+
     public String getCurrentTime() {
-        return ZonedDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        return DateTimeUtil.formatted(time.now());
     }
 
     public String getClientIp(HttpServletRequest request) {
