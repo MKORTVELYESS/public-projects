@@ -1,5 +1,13 @@
 plugins {
     id("java")
+    alias(libs.plugins.spring.boot)
+    alias(libs.plugins.spring.dependency.management)
+}
+
+val javaVersion: String by project
+
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(javaVersion))
 }
 
 group = "org.example"
@@ -10,8 +18,8 @@ repositories {
 }
 
 dependencies {
-    testImplementation(platform("org.junit:junit-bom:5.9.1"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 tasks.test {
