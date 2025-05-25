@@ -30,7 +30,6 @@ class ControllerTest {
       OffsetDateTime.of(2025, 5, 24, 12, 47, 3, 0, ZoneOffset.UTC);
   private final SystemTimeSource mockSystemTimeSource;
   private final Controller controller;
-  private final HttpRequestLogRepository httpRequestLogRepository;
 
   @Autowired
   public ControllerTest(
@@ -39,7 +38,6 @@ class ControllerTest {
       HttpRequestLogRepository logRepository) {
     this.mockSystemTimeSource = systemTimeSource;
     this.controller = controller;
-    this.httpRequestLogRepository = logRepository;
   }
 
   @Autowired private HttpRequestLogRepository logRepository;
