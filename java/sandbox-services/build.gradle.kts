@@ -5,6 +5,7 @@ import org.gradle.kotlin.dsl.internal.sharedruntime.codegen.pluginEntriesFrom
 
 plugins {
     java
+    jacoco
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spring.dependency.management)
     alias(libs.plugins.spotless)
@@ -13,6 +14,7 @@ plugins {
 
 val javaVersion: String by project
 val spotbugsToolVersion: String by project
+val jacocoToolVersion: String by project
 val mockitoAgent = configurations.create("mockitoAgent")
 
 java {
@@ -33,7 +35,9 @@ spotbugs {
     reportLevel.set(Confidence.LOW)
 
 }
-
+jacoco {
+    toolVersion = jacocoToolVersion
+}
 
 group = "org.example"
 version = "1.0-SNAPSHOT"
@@ -56,13 +60,37 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
 }
 
+tasks.spotlessCheck{
+    dependsOn(tasks.spotlessApply)
+}
+
 tasks.test {
     useJUnitPlatform()
     jvmArgs = (jvmArgs ?: listOf()) + "-javaagent:${mockitoAgent.asPath}"
+    finalizedBy(tasks.jacocoTestReport,tasks.jacocoTestCoverageVerification)
 }
 
 tasks.withType<SpotBugsTask>().configureEach{
     reports.create("html"){
         required = true
+    }
+}
+
+tasks.jacocoTestReport {
+
+    reports {
+        html.required.set(true)
+        xml.required.set(false)
+        csv.required.set(false)
+    }
+}
+
+tasks.jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = "0.80".toBigDecimal()
+            }
+        }
     }
 }
