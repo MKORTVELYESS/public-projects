@@ -6,8 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class EntityListenerInjector {
 
-    public EntityListenerInjector(SystemTimeSource timeSource) {
-        LogEntityListener.setTimeSource(timeSource);
-    }
-
+  public EntityListenerInjector(SystemTimeSource timeSource) {
+    LogEntityListener.setTimeSource(timeSource);
+  }
 }

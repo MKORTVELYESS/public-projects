@@ -8,10 +8,9 @@ import org.springframework.context.annotation.Profile;
 @Configuration
 public class Config {
 
-    @Bean
-    @Profile("!test")
-    public SystemTimeSource systemTimeSource() {
-        return new SystemTimeSource();
-    }
-
+  @Bean
+  @Profile("!test")
+  public SystemTimeSource systemTimeSource() {
+    return new SystemTimeSource();
+  }
 }

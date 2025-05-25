@@ -1,7 +1,10 @@
+import org.gradle.kotlin.dsl.internal.sharedruntime.codegen.pluginEntriesFrom
+
 plugins {
-    id("java")
+    java
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spring.dependency.management)
+    alias(libs.plugins.spotless)
 }
 
 val javaVersion: String by project
@@ -10,6 +13,14 @@ val mockitoAgent = configurations.create("mockitoAgent")
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(javaVersion))
 }
+
+spotless {
+    java {
+        googleJavaFormat()
+    }
+}
+
+
 
 group = "org.example"
 version = "1.0-SNAPSHOT"

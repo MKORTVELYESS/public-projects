@@ -5,27 +5,23 @@ import org.example.util.DateTimeUtil;
 import org.example.util.SystemTimeSource;
 import org.springframework.stereotype.Service;
 
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-
 @Service
 public class InfoService {
 
-    private final SystemTimeSource time;
+  private final SystemTimeSource time;
 
-    public InfoService(SystemTimeSource systemTimeSource){
-        this.time = systemTimeSource;
-    }
+  public InfoService(SystemTimeSource systemTimeSource) {
+    this.time = systemTimeSource;
+  }
 
-    public String getCurrentTime() {
-        return DateTimeUtil.formatted(time.now());
-    }
+  public String getCurrentTime() {
+    return DateTimeUtil.formatted(time.now());
+  }
 
-    public String getClientIp(HttpServletRequest request) {
-        String xfHeader = request.getHeader("X-Forwarded-For");
-        return (xfHeader != null && !xfHeader.isBlank())
-                ? xfHeader.split(",")[0]
-                : request.getRemoteAddr();
-    }
-
+  public String getClientIp(HttpServletRequest request) {
+    String xfHeader = request.getHeader("X-Forwarded-For");
+    return (xfHeader != null && !xfHeader.isBlank())
+        ? xfHeader.split(",")[0]
+        : request.getRemoteAddr();
+  }
 }

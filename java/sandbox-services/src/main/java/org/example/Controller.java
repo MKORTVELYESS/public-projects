@@ -1,29 +1,26 @@
 package org.example;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class Controller {
 
-    private final InfoService infoService;
+  private final InfoService infoService;
 
-    public Controller(InfoService infoService) {
-        this.infoService = infoService;
-    }
+  public Controller(InfoService infoService) {
+    this.infoService = infoService;
+  }
 
-    @GetMapping("/health")
-    public Map<String, String> health(HttpServletRequest request) {
-        Map<String, String> response = new HashMap<>();
-        response.put("whoami", infoService.getClientIp(request));
-        response.put("time", infoService.getCurrentTime());
-        response.put("status", "up");
-        return response;
-    }
-
-
+  @GetMapping("/health")
+  public Map<String, String> health(HttpServletRequest request) {
+    Map<String, String> response = new HashMap<>();
+    response.put("whoami", infoService.getClientIp(request));
+    response.put("time", infoService.getCurrentTime());
+    response.put("status", "up");
+    return response;
+  }
 }

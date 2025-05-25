@@ -1,12 +1,10 @@
 package org.example;
 
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 public interface HttpRequestLogRepository extends JpaRepository<HttpRequestLog, Long> {
-    List<HttpRequestLog> findByRemoteIp(String remoteIp);
+  List<HttpRequestLog> findByRemoteIp(String remoteIp);
 }
-
