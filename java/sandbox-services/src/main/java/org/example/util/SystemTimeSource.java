@@ -1,12 +1,12 @@
 package org.example.util;
 
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 
 public class SystemTimeSource {
 
-    public ZonedDateTime now() {
-        return ZonedDateTime.now(ZoneId.of("UTC"));
+    public OffsetDateTime now() {
+        return OffsetDateTime.now(ZoneId.of("UTC"));
     }
 
 }
