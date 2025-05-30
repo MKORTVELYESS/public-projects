@@ -1,92 +1,102 @@
 package org.example.shannon;
 
 import java.util.*;
-import java.util.stream.IntStream;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Group {
-    public Integer maxCapacity;
-    public Element[] members;
-    public Integer currentUsage;
-    public Map<String, Integer> attributeFrequency;
-    public UUID groupId;
+  private final Integer maxCapacity;
+  private final List<Element> members;
+  private final Integer currentUsage;
+  private final Map<String, Integer> attributeFrequency;
+  private final UUID groupId;
 
-    public Group(Integer maxCapacity) {
-        this.currentUsage = 0;
-        this.maxCapacity = maxCapacity;
-        this.members = new Element[maxCapacity];
-        this.groupId = UUID.randomUUID();
-        this.attributeFrequency = new HashMap<>();
-    }
+  public Group(Integer maxCapacity) {
+    this.currentUsage = 0;
+    this.maxCapacity = maxCapacity;
+    this.members = new ArrayList<>(maxCapacity);
+    this.groupId = UUID.randomUUID();
+    this.attributeFrequency = new HashMap<>();
+  }
 
-    Boolean isFull() {
-        return Objects.equals(currentUsage, maxCapacity);
-    }
+  private Group(
+      Integer maxCapacity,
+      List<Element> members,
+      Integer currentUsage,
+      Map<String, Integer> attributeFrequency,
+      UUID groupId) {
+    this.maxCapacity = maxCapacity;
+    this.members = members;
+    this.currentUsage = currentUsage;
+    this.attributeFrequency = attributeFrequency;
+    this.groupId = groupId;
+  }
 
-    private Boolean isEmpty() {
-        return currentUsage == 0;
-    }
+  public Group copy(
+      List<Element> members, Integer currentUsage, Map<String, Integer> attributeFrequency) {
 
+    return new Group(
+        this.maxCapacity,
+        List.copyOf(members),
+        currentUsage,
+        Map.copyOf(attributeFrequency),
+        this.groupId);
+  }
 
-    private Integer indexOfFirstNull() {
-        for (int i = 0; i < members.length; i++) {
-            if (members[i] == null) {
-                return i;
-            }
-        }
-        return -1;
-    }
+  Boolean isFull() {
+    return Objects.equals(currentUsage, maxCapacity);
+  }
 
-    private Integer getCurrentAttributeFrequency(String attribute) {
-        return attributeFrequency.getOrDefault(attribute, 0);
-    }
+  private Integer getCurrentAttributeFrequency(String attribute) {
+    return attributeFrequency.getOrDefault(attribute, 0);
+  }
 
+  public Double shannonIndex() {
 
-    public Double shannonIndex() {
+    if (currentUsage == 0) {
+      return -1.0;
+    } else {
 
-        if (currentUsage == 0) {
-            return -1.0;
-        }
-
-        var weightedGeomean = attributeFrequency.values().stream()
-                .map((freq) -> {
+      var weightedGeomean =
+          attributeFrequency.values().stream()
+              .map(
+                  (freq) -> {
                     var p = (double) freq / currentUsage;
                     return Math.pow(p, p);
-                }).reduce(1.0, (accumulator, next) -> accumulator * next);
+                  })
+              .reduce(1.0, (accumulator, next) -> accumulator * next);
 
-        return Math.log((1 / weightedGeomean));
+      return Math.log((1 / weightedGeomean));
     }
+  }
 
-    public Integer addMember(Element e) throws IndexOutOfBoundsException {
-        if (!isFull()) {
-            var indexToPopulate = indexOfFirstNull();
-            members[indexToPopulate] = e;
-            currentUsage++;
-            attributeFrequency.put(e.getAttrib(), getCurrentAttributeFrequency(e.getAttrib()) + 1);
-            return indexToPopulate;
-        } else {
-            throw new IndexOutOfBoundsException("Can not add more members as this group is at capacity");
-        }
-    }
+  public Group addMember(Element e) throws IndexOutOfBoundsException {
+    if (!isFull()) {
+      var newMembers =
+          Stream.concat(this.members.stream(), Stream.of(e)).collect(Collectors.toList());
 
-    public void removeMember(Integer idx) throws IndexOutOfBoundsException {
-        if (!(members[idx] == null)) {
-            var attrib = members[idx].getAttrib();
-            members[idx] = null;
-            currentUsage--;
-            attributeFrequency.put(attrib, getCurrentAttributeFrequency(attrib) - 1);
-        } else {
-            throw new IndexOutOfBoundsException("Can not remove, this index is already null");
-        }
-    }
+      var mutableMapCopy = new HashMap<>(Map.copyOf(this.attributeFrequency));
+      mutableMapCopy.put(e.getAttrib(), getCurrentAttributeFrequency(e.getAttrib()) + 1);
 
-    @Override
-    public String toString() {
-        return "Group{" +
-                "maxCapacity=" + maxCapacity +
-                ", members=" + Arrays.toString(members) +
-                ", currentUsage=" + currentUsage +
-                ", attributeFrequency=" + attributeFrequency +
-                ", groupId=" + groupId +
-                '}';
+      return this.copy(newMembers, this.currentUsage + 1, mutableMapCopy);
+    } else {
+      throw new IndexOutOfBoundsException("Can not add more members as this group is at capacity");
     }
+  }
+
+  @Override
+  public String toString() {
+    return "Group{"
+        + "maxCapacity="
+        + maxCapacity
+        + ", members="
+        + members
+        + ", currentUsage="
+        + currentUsage
+        + ", attributeFrequency="
+        + attributeFrequency
+        + ", groupId="
+        + groupId
+        + '}';
+  }
 }

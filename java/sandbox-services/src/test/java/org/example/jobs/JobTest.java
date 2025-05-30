@@ -8,7 +8,9 @@ class JobTest {
 
   @Test
   void testJob() {
-    Job j = JobFactory.fromJil("      insert_job:       appDev#cmd#ProductLoad\n"
+    Job j =
+        JobFactory.fromJil(
+            "      insert_job:       appDev#cmd#ProductLoad\n"
                 + "      job_type:         command\n"
                 + "      description:      Run ProductLoad Script\n"
                 + "      box_name:         appDev#box#ProductLoad\n"
