@@ -1,6 +1,8 @@
 package org.example.shannon;
 
 import java.util.List;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class GroupBuilderTest {
@@ -21,8 +23,17 @@ class GroupBuilderTest {
 
     var ppl = List.of(a, b, c, d, e, f, g, h, j, k, l, m);
 
-    var groups = GroupBuilder.createMixedGroups(ppl, 4);
 
-    System.out.println(groups);
+    var expected = List.of(
+            new Group(3).addMember(d).addMember(f).addMember(m),
+            new Group(3).addMember(b).addMember(h).addMember(k),
+            new Group(3).addMember(c).addMember(e).addMember(j),
+            new Group(3).addMember(a).addMember(g).addMember(l)
+    );
+
+    var actual = GroupBuilder.createMixedGroups(ppl, 4);
+
+
+    Assertions.assertEquals(expected,actual);
   }
 }

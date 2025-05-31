@@ -85,6 +85,19 @@ public class Group {
   }
 
   @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Group group = (Group) o;
+    return Objects.equals(members, group.members);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(members);
+  }
+
+  @Override
   public String toString() {
     return "Group{"
         + "maxCapacity="
