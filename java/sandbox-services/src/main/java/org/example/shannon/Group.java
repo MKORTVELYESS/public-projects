@@ -11,6 +11,10 @@ public class Group {
   private final Map<String, Integer> attributeFrequency;
   private final UUID groupId;
 
+  public UUID getGroupId() {
+    return groupId;
+  }
+
   public Group(Integer maxCapacity) {
     this.currentUsage = 0;
     this.maxCapacity = maxCapacity;
@@ -84,6 +88,12 @@ public class Group {
     }
   }
 
+  public Group addMembers(List<Element> elems) throws IndexOutOfBoundsException {
+    if (elems.isEmpty()) return this;
+    else if (elems.size() == 1) return this.addMember(elems.getFirst());
+    else return this.addMember(elems.getFirst()).addMembers(elems.subList(1, elems.size()));
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -95,6 +105,18 @@ public class Group {
   @Override
   public int hashCode() {
     return Objects.hash(members);
+  }
+
+  public Integer getMaxCapacity() {
+    return maxCapacity;
+  }
+
+  public Integer getCurrentUsage() {
+    return currentUsage;
+  }
+
+  public Integer getCurrentCapacity() {
+    return getMaxCapacity() - getCurrentUsage();
   }
 
   @Override

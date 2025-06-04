@@ -42,4 +42,21 @@ class JobTest {
     assertEquals("yes", j.getAttributes().get("job_terminator"));
     assertEquals("yes", j.getAttributes().get("box_terminator"));
   }
+
+  @Test
+  void testInvlidJob() {
+
+    assertThrows(
+        IllegalStateException.class,
+        () -> {
+          Job j =
+              JobFactory.fromJil(
+                  "      insert_job:       appDev#cmd#ProductLoad\n"
+                      + "      insert_job:         command\n"
+                      + "      insert_job:      Run ProductLoad Script\n"
+                      + "      insert_job:         appDev#box#ProductLoad\n"
+                      + "      owner:            @[DB_USER]\n"
+                      + "      machine:          @[AUTOSYS_SERVER]\n");
+        });
+  }
 }

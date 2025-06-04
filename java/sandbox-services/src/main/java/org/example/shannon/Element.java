@@ -5,10 +5,26 @@ import java.util.Objects;
 public class Element {
   private final String name;
   private final String attrib;
+  private final short personalityBits;
 
   public Element(String attrib, String name) {
     this.attrib = attrib;
     this.name = name;
+    this.personalityBits = 0b0000000000;
+  }
+
+  public Element(short personalityBits, String name) {
+    this.attrib = "";
+    this.name = name;
+    this.personalityBits = personalityBits;
+  }
+
+  public short getPersonalityBits() {
+    return personalityBits;
+  }
+
+  public int hummingSimilarity(Element other) {
+    return 10 - Integer.bitCount(this.getPersonalityBits() ^ other.getPersonalityBits());
   }
 
   @Override
