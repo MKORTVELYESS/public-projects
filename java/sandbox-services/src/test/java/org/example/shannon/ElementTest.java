@@ -27,7 +27,9 @@ class ElementTest {
   @Test
   void testHashCode() {
     var a = new Element("hasHead", "Kimmy");
-    assertEquals(-1350874592, a.hashCode());
+    var b = new Element(String.valueOf(0b0101010101), "Kimmy");
+    assertEquals(1072560608, a.hashCode());
+    assertEquals(954988106, b.hashCode());
   }
 
   @Test

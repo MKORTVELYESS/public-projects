@@ -32,12 +32,14 @@ public class Element {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Element element = (Element) o;
-    return Objects.equals(name, element.name) && Objects.equals(attrib, element.attrib);
+    return Objects.equals(name, element.name)
+        && Objects.equals(attrib, element.attrib)
+        && Objects.equals(personalityBits, element.personalityBits);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, attrib);
+    return Objects.hash(name, attrib, personalityBits);
   }
 
   @Override
