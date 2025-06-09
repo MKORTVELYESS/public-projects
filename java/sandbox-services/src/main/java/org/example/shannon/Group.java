@@ -122,10 +122,6 @@ public class Group {
     else return this.addMember(elems.getFirst()).addMembers(elems.subList(1, elems.size()));
   }
 
-  public boolean hasCommonMember(Group other) {
-    return this.getMembers().stream().anyMatch(mem -> other.getMembers().contains(mem));
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
