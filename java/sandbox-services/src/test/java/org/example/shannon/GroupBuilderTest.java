@@ -2,6 +2,7 @@ package org.example.shannon;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -112,6 +113,17 @@ class GroupBuilderTest {
 
     var actual = GroupBuilder.createSimilarGroups(ppl, 4);
     Assertions.assertEquals(new HashSet<>(expected), new HashSet<>(actual));
-    actual.forEach(grp -> System.out.println(grp.avgProximity()));
+    actual.forEach(
+        grp -> System.out.println("avg: " + grp.avgProximity() + " stdev: " + grp.stdProximity()));
+    var strings =
+        actual.stream()
+            .map(
+                grp -> {
+                  var builder = new StringBuilder();
+                  grp.getMembers().forEach(mem -> builder.append(mem.getName()).append(" "));
+                  return builder.toString();
+                })
+            .collect(Collectors.toList());
+    System.out.println(strings);
   }
 }

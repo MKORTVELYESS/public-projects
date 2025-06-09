@@ -8,6 +8,11 @@ import java.util.stream.Stream;
 public class Group {
   private final Integer maxCapacity;
   private final List<Element> members;
+
+  public List<Element> getMembers() {
+    return List.copyOf(members);
+  }
+
   private final Integer currentUsage;
   private final Map<String, Integer> attributeFrequency;
   private final UUID groupId;

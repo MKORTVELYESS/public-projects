@@ -7,6 +7,10 @@ public class Element {
   private final String attrib;
   private final short personalityBits;
 
+  public String getName() {
+    return name;
+  }
+
   public Element(String attrib, String name) {
     this.attrib = attrib;
     this.name = name;
