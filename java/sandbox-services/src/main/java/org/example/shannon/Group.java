@@ -99,7 +99,7 @@ public class Group {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Group group = (Group) o;
-    return Objects.equals(members, group.members);
+    return Objects.equals(new HashSet<>(members), new HashSet<>(group.members));
   }
 
   @Override
