@@ -38,7 +38,7 @@ public class ListUtils {
     for (int i = start; i < input.size(); i++) {
       current.add(input.get(i));
       generate(input, n, i + 1, current, result);
-      current.removeLast();
+      current.remove(current.size() - 1);
     }
   }
 }

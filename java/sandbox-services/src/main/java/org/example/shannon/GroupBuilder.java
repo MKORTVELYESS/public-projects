@@ -2,7 +2,6 @@ package org.example.shannon;
 
 import static org.example.util.ListUtils.generateCombinations;
 import static org.example.util.ListUtils.newImmutableListFrom;
-import static org.example.util.StreamUtils.combinationsAsStream;
 
 import java.util.Comparator;
 import java.util.List;
@@ -43,7 +42,7 @@ public class GroupBuilder {
 
     var elementCombinations = generateCombinations(fromElements, groupCapacity);
     var filledGroups = generateGroupsFromElementLists(elementCombinations, groupCapacity);
-    var allGroupCombinations = combinationsAsStream(filledGroups, numberOfGroups);
+    var allGroupCombinations = generateCombinations(filledGroups, numberOfGroups);
 
     return getValidCombinationsWithoutDuplicates(allGroupCombinations);
   }
@@ -66,8 +65,8 @@ public class GroupBuilder {
   }
 
   public static List<List<Group>> getValidCombinationsWithoutDuplicates(
-      Stream<List<Group>> allCombinations) {
-    return allCombinations
+      List<List<Group>> allCombinations) {
+    return allCombinations.stream()
         .filter(
             combination ->
                 combination.stream()
