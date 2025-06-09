@@ -1,9 +1,11 @@
 package org.example.shannon;
 
+import static org.example.util.ListUtils.generateCombinations;
 import static org.example.util.ListUtils.newImmutableListFrom;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.example.util.ListUtils;
 
@@ -23,6 +25,57 @@ public class GroupBuilder {
         Stream.generate(() -> new Group(groupCapacity)).limit(numberOfGroups).toList();
 
     return insertElementsToRealizeMostSimilarity(fromElements, emptyGroups);
+  }
+
+  public static List<Group> getGroupingCombinationWithMaximumAverageSimilarity(
+      List<Element> fromElements, Integer numberOfGroups) {
+    var combinations = createAllPossibleValidGroupings(fromElements, numberOfGroups);
+
+    var sortedCombinations = sortGroupsFromMostProximityToLeastProximity(combinations);
+
+    return sortedCombinations.getFirst();
+  }
+
+  public static List<List<Group>> createAllPossibleValidGroupings(
+      List<Element> fromElements, Integer numberOfGroups) {
+    var groupCapacity = fromElements.size() / numberOfGroups;
+
+    var elementCombinations = generateCombinations(fromElements, groupCapacity);
+    var filledGroups = generateGroupsFromElementLists(elementCombinations, groupCapacity);
+    var allGroupCombinations = generateCombinations(filledGroups, numberOfGroups);
+
+    return getValidCombinationsWithoutDuplicates(allGroupCombinations);
+  }
+
+  public static List<Group> generateGroupsFromElementLists(
+      List<List<Element>> elementCombinations, int groupSize) {
+    return elementCombinations.stream()
+        .map(elems -> new Group(groupSize).addMembers(elems))
+        .collect(Collectors.toList());
+  }
+
+  public static List<List<Group>> sortGroupsFromMostProximityToLeastProximity(
+      List<List<Group>> combinations) {
+    return combinations.stream()
+        .sorted(
+            Comparator.comparingDouble(
+                combo -> combo.stream().mapToDouble(Group::avgProximity).average().orElse(0.0)))
+        .toList()
+        .reversed();
+  }
+
+  public static List<List<Group>> getValidCombinationsWithoutDuplicates(
+      List<List<Group>> allCombinations) {
+    return allCombinations.stream()
+        .filter(
+            combination ->
+                combination.stream()
+                    .allMatch(
+                        group ->
+                            combination.stream()
+                                .filter(grp -> !group.equals(grp))
+                                .noneMatch(grp -> grp.hasCommonMember(group))))
+        .toList();
   }
 
   private static List<Group> insertElementsToRealizeHighestMixing(
