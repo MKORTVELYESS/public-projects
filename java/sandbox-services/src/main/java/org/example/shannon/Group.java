@@ -2,6 +2,7 @@ package org.example.shannon;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
 
 public class Group {
@@ -72,6 +73,28 @@ public class Group {
 
       return Math.log((1 / weightedGeomean));
     }
+  }
+
+  private DoubleStream individualProximities() {
+    return members.stream()
+        .mapToDouble(
+            member ->
+                members.stream()
+                    .filter(mem -> !mem.equals(member))
+                    .mapToInt(member::hummingSimilarity)
+                    .average()
+                    .orElse(0.0));
+  }
+
+  public Double avgProximity() {
+    return individualProximities().average().orElse(0.0);
+  }
+
+  public Double stdProximity() {
+    var avg = avgProximity();
+    var variance =
+        individualProximities().map(proximity -> Math.pow(proximity - avg, 2)).average().orElse(0);
+    return Math.sqrt(variance);
   }
 
   public Group addMember(Element e) throws IndexOutOfBoundsException {

@@ -44,7 +44,16 @@ public class Element {
 
   @Override
   public String toString() {
-    return "Element{" + "name='" + name + '\'' + ", attrib='" + attrib + '\'' + '}';
+    return "Element{"
+        + "name='"
+        + name
+        + '\''
+        + ", attrib='"
+        + attrib
+        + '\''
+        + ", personalityBits="
+        + String.format("%10s", Integer.toBinaryString(personalityBits & 0x3FF)).replace(' ', '0')
+        + '}';
   }
 
   public String getAttrib() {

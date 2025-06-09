@@ -27,16 +27,19 @@ class ElementTest {
   @Test
   void testHashCode() {
     var a = new Element("hasHead", "Kimmy");
-    var b = new Element(String.valueOf(0b0101010101), "Kimmy");
+    var b = new Element((short) 0b0101010101, "Kimmy");
     assertEquals(1072560608, a.hashCode());
-    assertEquals(954988106, b.hashCode());
+    assertEquals(953417615, b.hashCode());
   }
 
   @Test
   void testToString() {
     var actual = new Element("hasHead", "Kimmy");
-    var expected = "Element{name='Kimmy', attrib='hasHead'}";
+    var actual2 = new Element((short) 0b0101010101, "Tommer");
+    var expected = "Element{name='Kimmy', attrib='hasHead', personalityBits=0000000000}";
+    var expected2 = "Element{name='Tommer', attrib='', personalityBits=0101010101}";
     assertEquals(expected, actual.toString());
+    assertEquals(expected2, actual2.toString());
   }
 
   @Test
@@ -44,9 +47,15 @@ class ElementTest {
     var first = new Element((short) 0b0101010101, "Mate");
     var second = new Element((short) 0b0101010100, "Mate");
     var third = new Element((short) 0b0000000000, "Mate");
+    var fourth = new Element((short) 0b0101110010, "Armin");
+    var fifth = new Element((short) 0b1100001110, "Mark");
     var similarity1 = first.hummingSimilarity(second);
     var similarity2 = second.hummingSimilarity(third);
+    var similarity3 = fourth.hummingSimilarity(fifth);
+    var similarity4 = fifth.hummingSimilarity(fourth);
     assertEquals(9, similarity1);
     assertEquals(6, similarity2);
+    assertEquals(4, similarity3);
+    assertEquals(4, similarity4);
   }
 }
