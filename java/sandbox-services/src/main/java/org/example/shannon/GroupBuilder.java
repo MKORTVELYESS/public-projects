@@ -4,6 +4,7 @@ import static org.example.util.ListUtils.newImmutableListFrom;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.example.util.ListUtils;
 
@@ -44,7 +45,6 @@ public class GroupBuilder {
 
   private static List<Group> insertElementsToRealizeMostSimilarity(
       List<Element> elementsToInsert, List<Group> groups) {
-
     if (elementsToInsert.isEmpty() || groups.stream().allMatch(Group::isFull)) return groups;
     else {
       var mostToLeastCapacityGroups =
@@ -55,7 +55,9 @@ public class GroupBuilder {
       var splitGroups = ListUtils.splitAfter(1, mostToLeastCapacityGroups);
       var headGroup = splitGroups.first().getFirst();
       var splitElements =
-          getNMostSimilarElementsFromListAndRest(headGroup.getCurrentCapacity(), elementsToInsert);
+          getNMostSimilarElementsFromListAndRest(
+              headGroup.getCurrentCapacity(),
+              elementsToInsert.stream().sorted().collect(Collectors.toList()));
       var filledGroup = splitGroups.first().getFirst().addMembers(splitElements.first());
       return insertElementsToRealizeMostSimilarity(
           splitElements.rest(), newImmutableListFrom(filledGroup, splitGroups.rest()));

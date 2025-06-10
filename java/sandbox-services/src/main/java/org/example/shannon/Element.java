@@ -2,7 +2,7 @@ package org.example.shannon;
 
 import java.util.Objects;
 
-public class Element {
+public class Element implements Comparable<Element> {
   private final String name;
   private final String attrib;
   private final short personalityBits;
@@ -56,11 +56,20 @@ public class Element {
         + attrib
         + '\''
         + ", personalityBits="
-        + String.format("%10s", Integer.toBinaryString(personalityBits & 0x3FF)).replace(' ', '0')
+        + getPersonalityBitsAsString()
         + '}';
+  }
+
+  private String getPersonalityBitsAsString() {
+    return String.format("%10s", Integer.toBinaryString(personalityBits & 0x3FF)).replace(' ', '0');
   }
 
   public String getAttrib() {
     return attrib;
+  }
+
+  @Override
+  public int compareTo(Element o) {
+    return this.getPersonalityBitsAsString().compareTo(o.getPersonalityBitsAsString());
   }
 }

@@ -1,5 +1,7 @@
 package org.example.shannon;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,6 +9,15 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class GroupBuilderTest {
+
+  public static class Shuffler {
+    public static <T> List<T> shuffledCopy(List<T> input) {
+      List<T> copy = new ArrayList<>(input);
+      Collections.shuffle(copy);
+      return List.copyOf(copy); // returns immutable shuffled copy
+    }
+  }
+
   @Test
   void testCreateMixedGroups() {
     var a = new Element("NEMR", "Mate");
@@ -103,16 +114,18 @@ class GroupBuilderTest {
     var m = new Element((short) 0b1001101101, "Shailesh");
 
     var ppl = List.of(a, b, c, d, e, f, g, h, j, k, l, m);
-
+    List<Element> shuffled = Shuffler.shuffledCopy(ppl);
     var expected =
         List.of(
-            new Group(3).addMember(e).addMember(h).addMember(k),
-            new Group(3).addMember(l).addMember(j).addMember(f),
-            new Group(3).addMember(a).addMember(c).addMember(b),
-            new Group(3).addMember(m).addMember(d).addMember(g));
+            new Group(3).addMember(l).addMember(c).addMember(h),
+            new Group(3).addMember(j).addMember(f).addMember(d),
+            new Group(3).addMember(g).addMember(e).addMember(k),
+            new Group(3).addMember(m).addMember(b).addMember(a));
 
     var actual = GroupBuilder.createSimilarGroups(ppl, 4);
+    var actualFromShuffled = GroupBuilder.createSimilarGroups(shuffled, 4);
     Assertions.assertEquals(new HashSet<>(expected), new HashSet<>(actual));
+    Assertions.assertEquals(new HashSet<>(expected), new HashSet<>(actualFromShuffled));
     actual.forEach(
         grp -> System.out.println("avg: " + grp.avgProximity() + " stdev: " + grp.stdProximity()));
     var strings =
