@@ -1,4 +1,4 @@
-package org.example.shannon;
+package org.example.domain.shannon;
 
 import java.util.Objects;
 

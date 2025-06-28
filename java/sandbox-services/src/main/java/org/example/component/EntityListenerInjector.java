@@ -1,5 +1,6 @@
-package org.example;
+package org.example.component;
 
+import org.example.util.LogEntityListener;
 import org.example.util.SystemTimeSource;
 import org.springframework.stereotype.Component;
 

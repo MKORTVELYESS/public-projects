@@ -2,6 +2,8 @@ package org.example.shannon;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.example.domain.shannon.Element;
+import org.example.domain.shannon.Group;
 import org.junit.jupiter.api.Test;
 
 class ElementTest {

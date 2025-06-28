@@ -1,4 +1,4 @@
-package org.example.jobs;
+package org.example.domain.jobs;
 
 import java.util.ArrayList;
 import java.util.Arrays;

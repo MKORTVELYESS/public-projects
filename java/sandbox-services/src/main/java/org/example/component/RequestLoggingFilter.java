@@ -1,4 +1,4 @@
-package org.example;
+package org.example.component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -8,6 +8,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.stream.Collectors;
+
+import org.example.entity.HttpRequestLog;
+import org.example.repository.HttpRequestLogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;

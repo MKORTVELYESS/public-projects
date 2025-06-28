@@ -2,6 +2,8 @@ package org.example.jobs;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.example.domain.jobs.Job;
+import org.example.domain.jobs.JobFactory;
 import org.junit.jupiter.api.Test;
 
 class JobTest {

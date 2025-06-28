@@ -1,4 +1,4 @@
-package org.example;
+package org.example.config;
 
 import org.example.util.SystemTimeSource;
 import org.springframework.context.annotation.Bean;
@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 @Configuration
-public class Config {
+public class TimeSourceConfig {
 
   @Bean
   @Profile("!test")

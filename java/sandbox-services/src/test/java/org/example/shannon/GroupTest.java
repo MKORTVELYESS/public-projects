@@ -4,6 +4,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.HashSet;
 import java.util.List;
+
+import org.example.domain.shannon.Element;
+import org.example.domain.shannon.Group;
 import org.junit.jupiter.api.Test;
 
 class GroupTest {

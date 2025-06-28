@@ -4,7 +4,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import org.example.shannon.Group;
+
+import org.example.entity.HttpRequestLog;
+import org.example.domain.shannon.Group;
 import org.junit.jupiter.api.Test;
 
 class HttpRequestLogTest {
