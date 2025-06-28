@@ -2,6 +2,7 @@ package org.example.jobs;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.example.domain.jobs.JilAttributeKey;
 import org.example.domain.jobs.Job;
 import org.example.domain.jobs.JobFactory;
 import org.junit.jupiter.api.Test;
@@ -29,24 +30,28 @@ class JobTest {
 
     System.out.println(j.getAttributes());
 
-    assertEquals("appDev#cmd#ProductLoad", j.getAttributes().get("insert_job"));
-    assertEquals("command", j.getAttributes().get("job_type"));
-    assertEquals("Run ProductLoad Script", j.getAttributes().get("description"));
-    assertEquals("appDev#box#ProductLoad", j.getAttributes().get("box_name"));
-    assertEquals("@[DB_USER]", j.getAttributes().get("owner"));
-    assertEquals("@[AUTOSYS_SERVER]", j.getAttributes().get("machine"));
-    assertEquals("gx,wx", j.getAttributes().get("permission"));
-    assertEquals("/appl/bin/appDev_ProductLoad.sh", j.getAttributes().get("command"));
-    assertEquals("/appl/log/appDev#box#ProductLoad.out", j.getAttributes().get("std_out_file"));
-    assertEquals("/appl/log/appDev#box#ProductLoad.err", j.getAttributes().get("std_err_file"));
-    assertEquals("0", j.getAttributes().get("min_run_alarm"));
-    assertEquals("30", j.getAttributes().get("max_run_alarm"));
-    assertEquals("yes", j.getAttributes().get("job_terminator"));
-    assertEquals("yes", j.getAttributes().get("box_terminator"));
+    assertEquals("appDev#cmd#ProductLoad", j.getAttributes().get(JilAttributeKey.insert_job));
+    assertEquals("command", j.getAttributes().get(JilAttributeKey.job_type));
+    assertEquals("Run ProductLoad Script", j.getAttributes().get(JilAttributeKey.description));
+    assertEquals("appDev#box#ProductLoad", j.getAttributes().get(JilAttributeKey.box_name));
+    assertEquals("@[DB_USER]", j.getAttributes().get(JilAttributeKey.owner));
+    assertEquals("@[AUTOSYS_SERVER]", j.getAttributes().get(JilAttributeKey.machine));
+    assertEquals("gx,wx", j.getAttributes().get(JilAttributeKey.permission));
+    assertEquals("/appl/bin/appDev_ProductLoad.sh", j.getAttributes().get(JilAttributeKey.command));
+    assertEquals(
+        "/appl/log/appDev#box#ProductLoad.out",
+        j.getAttributes().get(JilAttributeKey.std_out_file));
+    assertEquals(
+        "/appl/log/appDev#box#ProductLoad.err",
+        j.getAttributes().get(JilAttributeKey.std_err_file));
+    assertEquals("0", j.getAttributes().get(JilAttributeKey.min_run_alarm));
+    assertEquals("30", j.getAttributes().get(JilAttributeKey.max_run_alarm));
+    assertEquals("yes", j.getAttributes().get(JilAttributeKey.job_terminator));
+    assertEquals("yes", j.getAttributes().get(JilAttributeKey.box_terminator));
   }
 
   @Test
-  void testInvlidJob() {
+  void testInvalidJob() {
 
     assertThrows(
         IllegalStateException.class,

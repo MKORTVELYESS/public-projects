@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.stream.Collectors;
-
 import org.example.entity.HttpRequestLog;
 import org.example.repository.HttpRequestLogRepository;
 import org.springframework.beans.factory.annotation.Autowired;

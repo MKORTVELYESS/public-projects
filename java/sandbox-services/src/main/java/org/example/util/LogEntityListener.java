@@ -2,7 +2,6 @@ package org.example.util;
 
 import jakarta.persistence.PrePersist;
 import org.example.entity.HttpRequestLog;
-import org.example.util.SystemTimeSource;
 
 public class LogEntityListener {
   private static SystemTimeSource timeSource;

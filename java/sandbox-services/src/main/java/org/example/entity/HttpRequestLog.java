@@ -1,10 +1,9 @@
 package org.example.entity;
 
 import jakarta.persistence.*;
-import org.example.util.LogEntityListener;
-
 import java.time.OffsetDateTime;
 import java.util.Objects;
+import org.example.util.LogEntityListener;
 
 @Entity
 @EntityListeners(LogEntityListener.class)

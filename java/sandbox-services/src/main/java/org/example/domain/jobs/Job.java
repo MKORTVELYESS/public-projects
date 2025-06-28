@@ -4,13 +4,13 @@ import java.util.Map;
 
 public class Job {
 
-  private final Map<String, String> attributes;
+  private final Map<JilAttributeKey, String> attributes;
 
-  public Map<String, String> getAttributes() {
+  public Map<JilAttributeKey, String> getAttributes() {
     return Map.copyOf(attributes);
   }
 
-  protected Job(Map<String, String> attributes) {
+  protected Job(Map<JilAttributeKey, String> attributes) {
     this.attributes = attributes;
   }
 }

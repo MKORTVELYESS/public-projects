@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.example.domain.shannon.Element;
 import org.example.domain.shannon.Group;
 import org.example.domain.shannon.GroupBuilder;
