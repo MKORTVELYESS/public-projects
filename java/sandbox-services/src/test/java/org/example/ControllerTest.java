@@ -78,7 +78,7 @@ class ControllerTest {
     final String ip = "123.45.67.89.health.test";
     mockMvc
         .perform(
-            MockMvcRequestBuilders.get("/health")
+            MockMvcRequestBuilders.get("/api/health")
                 .header("X-Forwarded-For", ip)
                 .with(remoteAddr(ip)))
         .andExpect(MockMvcResultMatchers.status().isOk())
@@ -92,7 +92,7 @@ class ControllerTest {
             new HttpRequestLog(
                 1L,
                 "GET",
-                "/health",
+                "/api/health",
                 null,
                 "{\"X-Forwarded-For\":\"123.45.67.89.health.test\"}",
                 "",

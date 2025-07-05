@@ -1,5 +1,6 @@
 package org.example.util;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,5 +35,12 @@ public class ListUtils {
         .filter(entry -> entry.getValue() > 1)
         .map(Map.Entry::getKey)
         .collect(Collectors.toSet());
+  }
+
+  public static <A> List<A> concatLists(List<A> first, List<A> second) {
+    List<A> result = new ArrayList<>(first.size() + second.size());
+    result.addAll(first);
+    result.addAll(second);
+    return result;
   }
 }

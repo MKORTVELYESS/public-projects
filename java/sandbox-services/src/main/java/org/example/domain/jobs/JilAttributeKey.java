@@ -1,8 +1,7 @@
 package org.example.domain.jobs;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public enum JilAttributeKey {
   delete_box(JilAttributeKeyType.SUBCOMMAND),
@@ -480,9 +479,7 @@ public enum JilAttributeKey {
     return key.getType().equals(JilAttributeKeyType.SUBCOMMAND);
   }
 
-  public static List<JilAttributeKey> getSubcommands() {
-    return Arrays.stream(values())
-        .filter(JilAttributeKey::isSubcommand)
-        .collect(Collectors.toList());
+  public static Stream<JilAttributeKey> streamSubcommands() {
+    return Arrays.stream(values()).filter(JilAttributeKey::isSubcommand);
   }
 }
