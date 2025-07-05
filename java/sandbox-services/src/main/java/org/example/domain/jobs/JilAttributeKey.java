@@ -1,5 +1,9 @@
 package org.example.domain.jobs;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public enum JilAttributeKey {
   delete_box(JilAttributeKeyType.SUBCOMMAND),
   delete_job(JilAttributeKeyType.SUBCOMMAND),
@@ -472,7 +476,13 @@ public enum JilAttributeKey {
     return type;
   }
 
-  public boolean isSubcommand() {
-    return getType().equals(JilAttributeKeyType.SUBCOMMAND);
+  private static boolean isSubcommand(JilAttributeKey key) {
+    return key.getType().equals(JilAttributeKeyType.SUBCOMMAND);
+  }
+
+  public static List<JilAttributeKey> getSubcommands() {
+    return Arrays.stream(values())
+        .filter(JilAttributeKey::isSubcommand)
+        .collect(Collectors.toList());
   }
 }

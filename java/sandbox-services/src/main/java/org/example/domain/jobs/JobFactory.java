@@ -1,10 +1,16 @@
 package org.example.domain.jobs;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
+import org.example.domain.jobs.model.Box;
+import org.example.domain.jobs.model.Cmd;
+import org.example.domain.jobs.model.Fw;
+import org.example.domain.jobs.model.Job;
 import org.example.util.ListUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,14 +22,43 @@ public class JobFactory {
   private static final Set<JilAttributeKey> attributeDuplicationAllowList =
       Set.of(JilAttributeKey.envvars);
 
-  public static Job fromJil(String jil) {
-    var parts = extractParts(jil);
-    var keys = extractAttributeKeys(parts);
-    var parsedKeys = keys.stream().map(JilAttributeKey::valueOf).collect(Collectors.toList());
-    var matchers = generateValueMatchersForKeysInJil(parsedKeys, jil);
-    var values = extractValues(jil, matchers);
-    var keyValueMap = mapKeysToValues(parsedKeys, values);
-    return new Job(keyValueMap);
+  public static Job fromInsertJobJil(String jil) {
+    final var parts = extractParts(jil);
+    final var keys = extractAttributeKeys(parts);
+    final var parsedKeys = keys.stream().map(JilAttributeKey::valueOf).collect(Collectors.toList());
+    final var matchers = generateValueMatchersForKeysInJil(parsedKeys, jil);
+    final var values = extractValues(jil, matchers);
+    final var keyValueMap = mapKeysToValues(parsedKeys, values);
+    final var jobName = findInsertJob(keyValueMap);
+    final var jobType = getJobType(keyValueMap);
+    logger.info("Start create {} job with name {}", jobType, jobName);
+    return switch (jobType) {
+      case JobType.CMD -> new Cmd(keyValueMap);
+      case JobType.BOX -> new Box(keyValueMap);
+      case JobType.FW -> new Fw(keyValueMap);
+      default -> throw new IllegalArgumentException("Job type " + jobType + " not implemented yet");
+    };
+  }
+
+  private static JobType getJobType(Map<JilAttributeKey, String> keyValueMap) {
+    return JobType.valueOf(keyValueMap.getOrDefault(JilAttributeKey.job_type, JobType.CMD.name()));
+  }
+
+  private static String findInsertJob(Map<JilAttributeKey, String> keyValueMap) {
+    Stream<JilAttributeKey> validSubcommands = Stream.of(JilAttributeKey.insert_job);
+    Function<JilAttributeKey, Stream<? extends String>> extractJobNameFromSubcommand =
+        key -> Optional.ofNullable(keyValueMap.get(key)).stream();
+    List<String> candidateJobNames =
+        validSubcommands.flatMap(extractJobNameFromSubcommand).toList();
+
+    if (candidateJobNames.size() != 1)
+      throw new IllegalArgumentException(
+          "A job should have exactly one subcommand. Found: "
+              + candidateJobNames.size()
+              + "\nSupported subcommands: "
+              + validSubcommands);
+
+    return candidateJobNames.getFirst();
   }
 
   private static String[] extractParts(String jil) {
