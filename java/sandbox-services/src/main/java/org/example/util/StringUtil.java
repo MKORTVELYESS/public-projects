@@ -1,5 +1,8 @@
 package org.example.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class StringUtil {
   public static final String WORD_SPLITTER = " ";
 
@@ -7,5 +10,20 @@ public class StringUtil {
     var words = line.strip().split(WORD_SPLITTER);
     var lastIndex = words.length - 1;
     return words[lastIndex];
+  }
+
+  public static List<String> breakDown(String splittable, String splitter) {
+    List<String> result = new ArrayList<>();
+
+    int crntIdx = 0;
+    int nextIdx = splittable.indexOf(splitter, crntIdx + 1);
+    while (nextIdx != -1) {
+      result.add(splittable.substring(crntIdx, nextIdx));
+      crntIdx = nextIdx;
+      nextIdx = splittable.indexOf(splitter, crntIdx + 1);
+    }
+    result.add(splittable.substring(crntIdx));
+
+    return result;
   }
 }

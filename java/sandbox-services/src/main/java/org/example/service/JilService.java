@@ -1,5 +1,7 @@
 package org.example.service;
 
+import static org.example.util.StringUtil.breakDown;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -21,33 +23,26 @@ public class JilService {
     var splitters = JilAttributeKey.streamSubcommands().toList().iterator();
     List<String> result = List.of(monolithicJil);
     while (splitters.hasNext()) {
-      result = splitJil(result.iterator(), splitters.next(), List.of());
+      result = splitJil(result.iterator(), splitters.next());
     }
     return result;
   }
 
-  public List<String> splitJil(
-      Iterator<String> inputs, JilAttributeKey splitter, List<String> results) {
-    if (inputs.hasNext()) {
+  /**
+   * Breaks down further a list that has been already broken down
+   *
+   * @param inputs = broken down jils to break down further
+   * @param splitter = jil subcommand to break down by
+   * @return --> accumulates and flattens the inputs iterator and the newly broken down list
+   */
+  public List<String> splitJil(Iterator<String> inputs, JilAttributeKey splitter) {
+    List<String> accumulator = new ArrayList<>();
+
+    while (inputs.hasNext()) {
       var brokenJils = breakDown(inputs.next(), splitter.toString());
-      return splitJil(inputs, splitter, ListUtils.concatLists(brokenJils, results));
-    } else {
-      return results;
+      accumulator = ListUtils.concatLists(accumulator, brokenJils);
     }
-  }
 
-  public List<String> breakDown(String splittable, String splitter) {
-    List<String> result = new ArrayList<>();
-
-    int crntIdx = 0;
-    int nextIdx = splittable.indexOf(splitter, crntIdx + 1);
-    while (nextIdx != -1) {
-      result.add(splittable.substring(crntIdx, nextIdx));
-      crntIdx = nextIdx;
-      nextIdx = splittable.indexOf(splitter, crntIdx + 1);
-    }
-    result.add(splittable.substring(crntIdx));
-
-    return result;
+    return accumulator;
   }
 }

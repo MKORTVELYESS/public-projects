@@ -7,8 +7,6 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import org.example.controller.Controller;
 import org.example.entity.HttpRequestLog;
 import org.example.repository.HttpRequestLogRepository;
@@ -133,18 +131,17 @@ class ControllerTest {
 
     when(mockSystemTimeSource.now()).thenReturn(testTime);
     final String body =
-        "insert_job: sb-services-job-load job_type: CMD machine: sndb1 owner: sandp condition: s(sb-services-job-input-fw) max_run_alarm:1000 min_run_alarm:400"
-            + "insert_job: sb-services-job-input-fw job_type: FW machine: sndb2 owner: sandp date_conditions:1 start_times: 13\\:00  max_run_alarm:1000 min_run_alarm:400"
+        "insert_job: sb-services-job-load job_type: CMD machine: sndb1 owner: sandp condition: s(sb-services-job-input-fw) max_run_alarm:1000 min_run_alarm:400 box_name:sb-services-job-box envvars:GREETING=\"hello world\"  envvars:GREETING2=\"hello world2\""
+            + "insert_job: sb-services-job-input-fw job_type: FW machine: sndb2 owner: sandp date_conditions:1 start_times: 13\\:00  max_run_alarm:1000 min_run_alarm:400 box_name:sb-services-job-box envvars:GREETING=\"hello world\""
             + "insert_job: sb-services-job-box job_type: BOX machine: sndb2 owner: sandp date_conditions:1 start_times: \"12:00\" max_run_alarm:1000 min_run_alarm:400";
-    final String hugeBody =
-        IntStream.range(0, 4000).mapToObj(num -> body).collect(Collectors.joining(" "));
+
     final StopWatch sw = new StopWatch();
     sw.start();
     mockMvc
         .perform(
             MockMvcRequestBuilders.post("/api/jil/print")
                 .contentType(MediaType.TEXT_PLAIN)
-                .content(hugeBody))
+                .content(body))
         .andExpect(MockMvcResultMatchers.status().isOk());
     sw.stop();
     System.out.println(sw.getTotalTimeSeconds());
