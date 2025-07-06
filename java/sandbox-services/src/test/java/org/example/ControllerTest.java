@@ -102,4 +102,21 @@ class ControllerTest {
 
     assertEquals(expected, actual);
   }
+
+  //  @Test
+  //  void shouldNotThrowExceptionWhenCalledWithValidJobBody() throws Exception {
+  //
+  //    when(mockSystemTimeSource.now()).thenReturn(testTime);
+  //    final String body =
+  //        "insert_job: sb-services-job-load job_type: CMD machine: sndb1 owner: sandp condition:
+  // s(sb-services-job-input-fw)"
+  //            + "insert_job: sb-services-job-input-fw job_type: FW machine: sndb2 owner: sandp
+  // date_conditions:1 start_times: 12\\:00";
+  //    mockMvc
+  //        .perform(
+  //            MockMvcRequestBuilders.post("/api/jil/print")
+  //                .contentType(MediaType.TEXT_PLAIN)
+  //                .content(body))
+  //        .andExpect(MockMvcResultMatchers.status().isOk());
+  //  }
 }
