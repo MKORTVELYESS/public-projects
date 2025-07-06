@@ -63,8 +63,7 @@ public class HttpRequestLog {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     HttpRequestLog that = (HttpRequestLog) o;
-    return Objects.equals(id, that.id)
-        && Objects.equals(method, that.method)
+    return Objects.equals(method, that.method)
         && Objects.equals(path, that.path)
         && Objects.equals(queryParams, that.queryParams)
         && Objects.equals(headers, that.headers)
@@ -75,7 +74,7 @@ public class HttpRequestLog {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, method, path, queryParams, headers, body, remoteIp, timestamp);
+    return Objects.hash(method, path, queryParams, headers, body, remoteIp, timestamp);
   }
 
   public HttpRequestLog(

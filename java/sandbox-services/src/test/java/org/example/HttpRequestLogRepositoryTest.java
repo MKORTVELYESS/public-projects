@@ -135,6 +135,7 @@ class HttpRequestLogRepositoryTest {
             testTime);
 
     assertEquals(a, b);
+    assertEquals(a, k);
     assertNotEquals(a, c);
     assertNotEquals(a, d);
     assertNotEquals(a, e);
@@ -142,7 +143,6 @@ class HttpRequestLogRepositoryTest {
     assertNotEquals(a, g);
     assertNotEquals(a, h);
     assertNotEquals(a, j);
-    assertNotEquals(a, k);
   }
 
   @Test
@@ -196,7 +196,7 @@ class HttpRequestLogRepositoryTest {
             expectedRemoteIp,
             expectedTimestamp);
 
-    var expected = -843173697;
+    var expected = 964280766;
     assertEquals(expected, actual.hashCode());
   }
 

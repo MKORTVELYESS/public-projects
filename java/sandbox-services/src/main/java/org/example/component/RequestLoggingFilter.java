@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 import org.example.entity.HttpRequestLog;
 import org.example.repository.HttpRequestLogRepository;
+import org.example.servlet.CachedBodyHttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -23,24 +24,27 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
   protected void doFilterInternal(
       HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
+    CachedBodyHttpServletRequest cachedRequest =
+        CachedBodyHttpServletRequest.fromHttpServletRequest(request);
 
-    String body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+    String body =
+        cachedRequest.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
     String headers =
         new ObjectMapper()
             .writeValueAsString(
-                Collections.list(request.getHeaderNames()).stream()
-                    .collect(Collectors.toMap(h -> h, request::getHeader)));
+                Collections.list(cachedRequest.getHeaderNames()).stream()
+                    .collect(Collectors.toMap(h -> h, cachedRequest::getHeader)));
 
     HttpRequestLog log = new HttpRequestLog();
-    log.setMethod(request.getMethod());
-    log.setPath(request.getRequestURI());
-    log.setQueryParams(request.getQueryString());
+    log.setMethod(cachedRequest.getMethod());
+    log.setPath(cachedRequest.getRequestURI());
+    log.setQueryParams(cachedRequest.getQueryString());
     log.setHeaders(headers);
     log.setBody(body);
-    log.setRemoteIp(request.getRemoteAddr());
+    log.setRemoteIp(cachedRequest.getRemoteAddr());
 
     logRepository.save(log);
 
-    filterChain.doFilter(request, response);
+    filterChain.doFilter(cachedRequest, response);
   }
 }

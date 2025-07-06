@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -76,11 +77,9 @@ class ControllerTest {
 
     when(mockSystemTimeSource.now()).thenReturn(testTime);
     final String ip = "123.45.67.89.health.test";
+    String url = "/api/health";
     mockMvc
-        .perform(
-            MockMvcRequestBuilders.get("/api/health")
-                .header("X-Forwarded-For", ip)
-                .with(remoteAddr(ip)))
+        .perform(MockMvcRequestBuilders.get(url).header("X-Forwarded-For", ip).with(remoteAddr(ip)))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("up"))
         .andExpect(MockMvcResultMatchers.jsonPath("$.whoami").value(ip))
@@ -92,7 +91,7 @@ class ControllerTest {
             new HttpRequestLog(
                 1L,
                 "GET",
-                "/api/health",
+                url,
                 null,
                 "{\"X-Forwarded-For\":\"123.45.67.89.health.test\"}",
                 "",
@@ -103,20 +102,41 @@ class ControllerTest {
     assertEquals(expected, actual);
   }
 
-  //  @Test
-  //  void shouldNotThrowExceptionWhenCalledWithValidJobBody() throws Exception {
-  //
-  //    when(mockSystemTimeSource.now()).thenReturn(testTime);
-  //    final String body =
-  //        "insert_job: sb-services-job-load job_type: CMD machine: sndb1 owner: sandp condition:
-  // s(sb-services-job-input-fw)"
-  //            + "insert_job: sb-services-job-input-fw job_type: FW machine: sndb2 owner: sandp
-  // date_conditions:1 start_times: 12\\:00";
-  //    mockMvc
-  //        .perform(
-  //            MockMvcRequestBuilders.post("/api/jil/print")
-  //                .contentType(MediaType.TEXT_PLAIN)
-  //                .content(body))
-  //        .andExpect(MockMvcResultMatchers.status().isOk());
-  //  }
+  @Test
+  void shouldTriggerFilterWhenEndpointCalled2() throws Exception {
+
+    when(mockSystemTimeSource.now()).thenReturn(testTime);
+    final String ip = "123.45.67.89.health.test2";
+    String url = "/api/health";
+    mockMvc
+        .perform(MockMvcRequestBuilders.get(url).header("X-Forwarded-For", ip).with(remoteAddr(ip)))
+        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("up"))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.whoami").value(ip))
+        .andExpect(
+            MockMvcResultMatchers.jsonPath("$.time").value(DateTimeUtil.formatted(testTime)));
+
+    List<HttpRequestLog> expected =
+        List.of(
+            new HttpRequestLog(
+                1L, "GET", url, null, "{\"X-Forwarded-For\":\"" + ip + "\"}", "", ip, testTime));
+    List<HttpRequestLog> actual = logRepository.findByRemoteIp(ip);
+
+    assertEquals(expected, actual);
+  }
+
+  @Test
+  void shouldNotThrowExceptionWhenCalledWithValidJobBody() throws Exception {
+
+    when(mockSystemTimeSource.now()).thenReturn(testTime);
+    final String body =
+        "insert_job: sb-services-job-load job_type: CMD machine: sndb1 owner: sandp condition: s(sb-services-job-input-fw)"
+            + "insert_job: sb-services-job-input-fw job_type: FW machine: sndb2 owner: sandp date_conditions:1 start_times: 12\\:00";
+    mockMvc
+        .perform(
+            MockMvcRequestBuilders.post("/api/jil/print")
+                .contentType(MediaType.TEXT_PLAIN)
+                .content(body))
+        .andExpect(MockMvcResultMatchers.status().isOk());
+  }
 }
