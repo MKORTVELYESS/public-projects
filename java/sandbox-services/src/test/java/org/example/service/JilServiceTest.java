@@ -12,7 +12,7 @@ class JilServiceTest {
   @Test
   void splitBeforeFirstOccurrenceOf() {
     final var input = "insert_job: first insert_job: second insert_job: third";
-    final var actual = service.breakBefore(input, "insert_job", List.of());
+    final var actual = service.breakDown(input, "insert_job");
     final var expected = List.of("insert_job: first ", "insert_job: second ", "insert_job: third");
     assertEquals(expected, actual);
   }

@@ -1,5 +1,6 @@
 package org.example.service;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import org.example.domain.jobs.JilAttributeKey;
@@ -28,23 +29,25 @@ public class JilService {
   public List<String> splitJil(
       Iterator<String> inputs, JilAttributeKey splitter, List<String> results) {
     if (inputs.hasNext()) {
-      var brokenJils = breakBefore(inputs.next(), splitter.toString(), List.of());
+      var brokenJils = breakDown(inputs.next(), splitter.toString());
       return splitJil(inputs, splitter, ListUtils.concatLists(brokenJils, results));
     } else {
       return results;
     }
   }
 
-  public List<String> breakBefore(String stringToSplit, String splitter, List<String> results) {
-    final var indexToBreakTheInputAt = stringToSplit.indexOf(splitter, 1);
-    boolean splitterNotFound = indexToBreakTheInputAt == -1;
+  public List<String> breakDown(String splittable, String splitter) {
+    List<String> result = new ArrayList<>();
 
-    if (splitterNotFound) {
-      return ListUtils.newImmutableListFrom(stringToSplit, results).reversed();
-    } else {
-      final var frst = stringToSplit.substring(0, indexToBreakTheInputAt);
-      final var rest = stringToSplit.substring(indexToBreakTheInputAt);
-      return breakBefore(rest, splitter, ListUtils.newImmutableListFrom(frst, results));
+    int crntIdx = 0;
+    int nextIdx = splittable.indexOf(splitter, crntIdx + 1);
+    while (nextIdx != -1) {
+      result.add(splittable.substring(crntIdx, nextIdx));
+      crntIdx = nextIdx;
+      nextIdx = splittable.indexOf(splitter, crntIdx + 1);
     }
+    result.add(splittable.substring(crntIdx));
+
+    return result;
   }
 }
