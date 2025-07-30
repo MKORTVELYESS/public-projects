@@ -41,7 +41,12 @@ class JilServiceTest {
   void enlistJils() {
     final var input = "insert_job: first delete_job: second update_job: third insert_job: fourth";
     final var actual = service.enlistJils(input);
-    final var expected = List.of("insert_job: first ", "delete_job: second ", "update_job: third ", "insert_job: fourth");
+    final var expected =
+        List.of(
+            "insert_job: first ",
+            "delete_job: second ",
+            "update_job: third ",
+            "insert_job: fourth");
     assertEquals(expected, actual);
   }
 }

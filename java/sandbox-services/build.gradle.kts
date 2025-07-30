@@ -15,6 +15,7 @@ plugins {
 val javaVersion: String by project
 val spotbugsToolVersion: String by project
 val jacocoToolVersion: String by project
+val lombokVersion: String by project
 val mockitoAgent = configurations.create("mockitoAgent")
 
 java {
@@ -51,6 +52,8 @@ dependencies {
         isTransitive = false
     }
 
+    annotationProcessor("org.projectlombok:lombok:$lombokVersion")
+
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
@@ -58,6 +61,8 @@ dependencies {
     testImplementation("com.h2database:h2")
 
     runtimeOnly("org.postgresql:postgresql")
+
+    compileOnly("org.projectlombok:lombok:$lombokVersion")
 }
 
 tasks.spotlessCheck{
