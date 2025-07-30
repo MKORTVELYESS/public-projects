@@ -11,11 +11,9 @@ public abstract class Job {
     return Map.copyOf(attributes);
   }
 
-  public String toString(){
-      var header = "/*--------------------------*/";
+  public String toString() {
+    var header = "/*--------------------------*/";
 
-
-
-      return "";
+    return "";
   }
 }
