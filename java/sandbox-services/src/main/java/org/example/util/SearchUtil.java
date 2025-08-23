@@ -7,7 +7,7 @@ public class SearchUtil {
   // Searches through our inputs and returns the subset of the inputs which contain at least one of
   // our keywords
   public static List<String> search(List<String> keywords, List<String> inputs) {
-    return inputs.stream()
+    return inputs.parallelStream()
         .filter(input -> keywords.stream().anyMatch(input::contains))
         .collect(Collectors.toList());
   }
