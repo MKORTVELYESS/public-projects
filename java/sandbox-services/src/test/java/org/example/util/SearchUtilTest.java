@@ -1233,4 +1233,17 @@ class SearchUtilTest {
     System.out.println("Time taken: " + sw.getTotalTimeMillis() + "ms");
     if (sw.getTotalTimeMillis() > 1000) throw new AssertionFailure("Slow");
   }
+
+  @Test
+  public void testMatchedBrands() {
+    var carNames = Set.of("AB_RACADABRA", "BM_W", "BMW", "BMW2", "ABBRACADAB");
+    LinkedHashMap<String,String> lhm = new LinkedHashMap<>();
+    lhm.put("AB_","first");
+    lhm.put("AB", "rest");
+    lhm.put("BMW2", "laterbmw");
+    lhm.put("BM", "otherbmw");
+
+    var result = SearchUtil.matchCarsToBrands(new HashSet<>(carNames),lhm);
+    System.out.println(result);
+  }
 }
