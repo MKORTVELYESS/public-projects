@@ -58,6 +58,30 @@ class NumberUtilTest {
 
     @Test
     void sumOfTwoTest() {
+        var result1 = NumberUtil.max(new int[]{1, 2, 3, 4});
+        var result2 = NumberUtil.max(new int[]{1});
+        var result3 = NumberUtil.max(new int[]{10, 1});
+        var result4 = NumberUtil.max(new int[]{1, 10});
+        var result5 = NumberUtil.max(new int[]{});
+        var result6 = NumberUtil.max(new int[]{-100, 0, 80});
+        var result7 = NumberUtil.max(new int[]{-100});
+        var result8 = NumberUtil.max(new int[]{-100, -99});
+        var result9 = NumberUtil.max(new int[]{-100, -99, -100, -100, -99, -99, -100});
+
+        assertEquals(4, result1);
+        assertEquals(1, result2);
+        assertEquals(10, result3);
+        assertEquals(10, result4);
+        assertEquals(Integer.MIN_VALUE, result5);
+        assertEquals(80, result6);
+        assertEquals(-100, result7);
+        assertEquals(-99, result8);
+        assertEquals(-99, result9);
+    }
+
+
+    @Test
+    void maxTest() {
         var result1 = NumberUtil.sumOfTwoNumsYieldN(10, new int[]{1, 2, 3, 4});
         var result2 = NumberUtil.sumOfTwoNumsYieldN(3, new int[]{1, 2, 3, 4});
         var result3 = NumberUtil.sumOfTwoNumsYieldN(5, new int[]{1, 2, 3, 4});
