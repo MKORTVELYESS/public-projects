@@ -1,7 +1,6 @@
 import com.github.spotbugs.snom.Confidence
 import com.github.spotbugs.snom.Effort
 import com.github.spotbugs.snom.SpotBugsTask
-import org.gradle.kotlin.dsl.internal.sharedruntime.codegen.pluginEntriesFrom
 
 plugins {
     java

@@ -805,25 +805,18 @@ class SearchUtilTest {
     var actual = SearchUtil.unmatchedStudentExists(keywords, inputs);
 
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
+        getInputPath(testNo),
         List.of(String.valueOf(keywords.size())),
         StandardOpenOption.CREATE,
         StandardOpenOption.APPEND);
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
-        keywords,
-        StandardOpenOption.CREATE,
-        StandardOpenOption.APPEND);
+        getInputPath(testNo), keywords, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
+        getInputPath(testNo),
         List.of(String.valueOf(inputs.size())),
         StandardOpenOption.CREATE,
         StandardOpenOption.APPEND);
-    Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
-        inputs,
-        StandardOpenOption.CREATE,
-        StandardOpenOption.APPEND);
+    Files.write(getInputPath(testNo), inputs, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
     Files.write(
         Path.of("C:\\Users\\kvint\\Downloads\\output" + testNo + " .txt"),
         List.of(actual ? "1" : "0"),
@@ -843,27 +836,20 @@ class SearchUtilTest {
     var actual = SearchUtil.unmatchedStudentExists(keywords, inputs);
 
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
+        getInputPath(testNo),
         List.of(String.valueOf(keywords.size())),
         StandardOpenOption.CREATE,
         StandardOpenOption.APPEND);
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
-        keywords,
-        StandardOpenOption.CREATE,
-        StandardOpenOption.APPEND);
+        getInputPath(testNo), keywords, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
+        getInputPath(testNo),
         List.of(String.valueOf(inputs.size())),
         StandardOpenOption.CREATE,
         StandardOpenOption.APPEND);
+    Files.write(getInputPath(testNo), inputs, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
-        inputs,
-        StandardOpenOption.CREATE,
-        StandardOpenOption.APPEND);
-    Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\output" + testNo + " .txt"),
+        getOutputPath(testNo),
         List.of(actual ? "1" : "0"),
         StandardOpenOption.CREATE,
         StandardOpenOption.APPEND);
@@ -883,27 +869,20 @@ class SearchUtilTest {
     var actual = SearchUtil.unmatchedStudentExists(keywords, inputs);
 
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
+        getInputPath(testNo),
         List.of(String.valueOf(keywords.size())),
         StandardOpenOption.CREATE,
         StandardOpenOption.APPEND);
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
-        keywords,
-        StandardOpenOption.CREATE,
-        StandardOpenOption.APPEND);
+        getInputPath(testNo), keywords, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
+        getInputPath(testNo),
         List.of(String.valueOf(inputs.size())),
         StandardOpenOption.CREATE,
         StandardOpenOption.APPEND);
+    Files.write(getInputPath(testNo), inputs, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
-        inputs,
-        StandardOpenOption.CREATE,
-        StandardOpenOption.APPEND);
-    Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\output" + testNo + " .txt"),
+        getOutputPath(testNo),
         List.of(actual ? "1" : "0"),
         StandardOpenOption.CREATE,
         StandardOpenOption.APPEND);
@@ -923,27 +902,20 @@ class SearchUtilTest {
     var actual = SearchUtil.unmatchedStudentExists(keywords, inputs);
 
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
+        getInputPath(testNo),
         List.of(String.valueOf(keywords.size())),
         StandardOpenOption.CREATE,
         StandardOpenOption.APPEND);
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
-        keywords,
-        StandardOpenOption.CREATE,
-        StandardOpenOption.APPEND);
+        getInputPath(testNo), keywords, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
+        getInputPath(testNo),
         List.of(String.valueOf(inputs.size())),
         StandardOpenOption.CREATE,
         StandardOpenOption.APPEND);
+    Files.write(getInputPath(testNo), inputs, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
-        inputs,
-        StandardOpenOption.CREATE,
-        StandardOpenOption.APPEND);
-    Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\output" + testNo + " .txt"),
+        getOutputPath(testNo),
         List.of(actual ? "1" : "0"),
         StandardOpenOption.CREATE,
         StandardOpenOption.APPEND);
@@ -963,27 +935,20 @@ class SearchUtilTest {
     var actual = SearchUtil.unmatchedStudentExists(keywords, inputs);
 
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
+        getInputPath(testNo),
         List.of(String.valueOf(keywords.size())),
         StandardOpenOption.CREATE,
         StandardOpenOption.APPEND);
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
-        keywords,
-        StandardOpenOption.CREATE,
-        StandardOpenOption.APPEND);
+        getInputPath(testNo), keywords, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
+        getInputPath(testNo),
         List.of(String.valueOf(inputs.size())),
         StandardOpenOption.CREATE,
         StandardOpenOption.APPEND);
+    Files.write(getInputPath(testNo), inputs, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
-        inputs,
-        StandardOpenOption.CREATE,
-        StandardOpenOption.APPEND);
-    Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\output" + testNo + " .txt"),
+        getOutputPath(testNo),
         List.of(actual ? "1" : "0"),
         StandardOpenOption.CREATE,
         StandardOpenOption.APPEND);
@@ -1003,27 +968,20 @@ class SearchUtilTest {
     var actual = SearchUtil.unmatchedStudentExists(keywords, inputs);
 
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
+        getInputPath(testNo),
         List.of(String.valueOf(keywords.size())),
         StandardOpenOption.CREATE,
         StandardOpenOption.APPEND);
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
-        keywords,
-        StandardOpenOption.CREATE,
-        StandardOpenOption.APPEND);
+        getInputPath(testNo), keywords, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
+        getInputPath(testNo),
         List.of(String.valueOf(inputs.size())),
         StandardOpenOption.CREATE,
         StandardOpenOption.APPEND);
+    Files.write(getInputPath(testNo), inputs, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
-        inputs,
-        StandardOpenOption.CREATE,
-        StandardOpenOption.APPEND);
-    Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\output" + testNo + " .txt"),
+        getOutputPath(testNo),
         List.of(actual ? "1" : "0"),
         StandardOpenOption.CREATE,
         StandardOpenOption.APPEND);
@@ -1043,27 +1001,20 @@ class SearchUtilTest {
     var actual = SearchUtil.unmatchedStudentExists(keywords, inputs);
 
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
+        getInputPath(testNo),
         List.of(String.valueOf(keywords.size())),
         StandardOpenOption.CREATE,
         StandardOpenOption.APPEND);
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
-        keywords,
-        StandardOpenOption.CREATE,
-        StandardOpenOption.APPEND);
+        getInputPath(testNo), keywords, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
+        getInputPath(testNo),
         List.of(String.valueOf(inputs.size())),
         StandardOpenOption.CREATE,
         StandardOpenOption.APPEND);
+    Files.write(getInputPath(testNo), inputs, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
-        inputs,
-        StandardOpenOption.CREATE,
-        StandardOpenOption.APPEND);
-    Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\output" + testNo + " .txt"),
+        getOutputPath(testNo),
         List.of(actual ? "1" : "0"),
         StandardOpenOption.CREATE,
         StandardOpenOption.APPEND);
@@ -1083,27 +1034,20 @@ class SearchUtilTest {
     var actual = SearchUtil.unmatchedStudentExists(keywords, inputs);
 
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
+        getInputPath(testNo),
         List.of(String.valueOf(keywords.size())),
         StandardOpenOption.CREATE,
         StandardOpenOption.APPEND);
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
-        keywords,
-        StandardOpenOption.CREATE,
-        StandardOpenOption.APPEND);
+        getInputPath(testNo), keywords, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
+        getInputPath(testNo),
         List.of(String.valueOf(inputs.size())),
         StandardOpenOption.CREATE,
         StandardOpenOption.APPEND);
+    Files.write(getInputPath(testNo), inputs, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
-        inputs,
-        StandardOpenOption.CREATE,
-        StandardOpenOption.APPEND);
-    Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\output" + testNo + " .txt"),
+        getOutputPath(testNo),
         List.of(actual ? "1" : "0"),
         StandardOpenOption.CREATE,
         StandardOpenOption.APPEND);
@@ -1123,27 +1067,20 @@ class SearchUtilTest {
     var actual = SearchUtil.unmatchedStudentExists(keywords, inputs);
 
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
+        getInputPath(testNo),
         List.of(String.valueOf(keywords.size())),
         StandardOpenOption.CREATE,
         StandardOpenOption.APPEND);
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
-        keywords,
-        StandardOpenOption.CREATE,
-        StandardOpenOption.APPEND);
+        getInputPath(testNo), keywords, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
+        getInputPath(testNo),
         List.of(String.valueOf(inputs.size())),
         StandardOpenOption.CREATE,
         StandardOpenOption.APPEND);
+    Files.write(getInputPath(testNo), inputs, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
-        inputs,
-        StandardOpenOption.CREATE,
-        StandardOpenOption.APPEND);
-    Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\output" + testNo + " .txt"),
+        getOutputPath(testNo),
         List.of(actual ? "1" : "0"),
         StandardOpenOption.CREATE,
         StandardOpenOption.APPEND);
@@ -1163,27 +1100,20 @@ class SearchUtilTest {
     var actual = SearchUtil.unmatchedStudentExists(keywords, inputs);
 
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
+        getInputPath(testNo),
         List.of(String.valueOf(keywords.size())),
         StandardOpenOption.CREATE,
         StandardOpenOption.APPEND);
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
-        keywords,
-        StandardOpenOption.CREATE,
-        StandardOpenOption.APPEND);
+        getInputPath(testNo), keywords, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
+        getInputPath(testNo),
         List.of(String.valueOf(inputs.size())),
         StandardOpenOption.CREATE,
         StandardOpenOption.APPEND);
+    Files.write(getInputPath(testNo), inputs, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt"),
-        inputs,
-        StandardOpenOption.CREATE,
-        StandardOpenOption.APPEND);
-    Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\output" + testNo + " .txt"),
+        getOutputPath(testNo),
         List.of(actual ? "1" : "0"),
         StandardOpenOption.CREATE,
         StandardOpenOption.APPEND);
@@ -1196,7 +1126,6 @@ class SearchUtilTest {
     String testNo = "11";
     Set<String> keywords = new HashSet<>(generateKeywords(100));
     Set<String> inputs = new HashSet<>(generateInputs(500000));
-    // Files.write(Path.of("resources"),inputs.stream().collect(Collectors.joining(System.lineSeparator())))
 
     var sw = new StopWatch();
     sw.start();
@@ -1204,27 +1133,20 @@ class SearchUtilTest {
         SearchUtil.unmatchedStudentExists(new ArrayList<>(keywords), new ArrayList<>(inputs));
     System.out.println("Exists?: " + actual);
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input11.txt"),
+        getInputPath(testNo),
         List.of(String.valueOf(keywords.size())),
         StandardOpenOption.CREATE,
         StandardOpenOption.APPEND);
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input11.txt"),
-        keywords,
-        StandardOpenOption.CREATE,
-        StandardOpenOption.APPEND);
+        getInputPath(testNo), keywords, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input11.txt"),
+        getInputPath(testNo),
         List.of(String.valueOf(inputs.size())),
         StandardOpenOption.CREATE,
         StandardOpenOption.APPEND);
+    Files.write(getInputPath(testNo), inputs, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
     Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\input11.txt"),
-        inputs,
-        StandardOpenOption.CREATE,
-        StandardOpenOption.APPEND);
-    Files.write(
-        Path.of("C:\\Users\\kvint\\Downloads\\output" + testNo + " .txt"),
+        getOutputPath(testNo),
         List.of(actual ? "1" : "0"),
         StandardOpenOption.CREATE,
         StandardOpenOption.APPEND);
@@ -1237,13 +1159,21 @@ class SearchUtilTest {
   @Test
   public void testMatchedBrands() {
     var carNames = Set.of("AB_RACADABRA", "BM_W", "BMW", "BMW2", "ABBRACADAB");
-    LinkedHashMap<String,String> lhm = new LinkedHashMap<>();
-    lhm.put("AB_","first");
+    LinkedHashMap<String, String> lhm = new LinkedHashMap<>();
+    lhm.put("AB_", "first");
     lhm.put("AB", "rest");
     lhm.put("BMW2", "laterbmw");
     lhm.put("BM", "otherbmw");
 
-    var result = SearchUtil.matchCarsToBrands(new HashSet<>(carNames),lhm);
+    var result = SearchUtil.matchCarsToBrands(new HashSet<>(carNames), lhm);
     System.out.println(result);
+  }
+
+  private static Path getInputPath(String testNo) {
+    return Path.of("C:\\Users\\kvint\\Downloads\\input" + testNo + " .txt");
+  }
+
+  private static Path getOutputPath(String testNo) {
+    return Path.of("C:\\Users\\kvint\\Downloads\\output" + testNo + " .txt");
   }
 }
