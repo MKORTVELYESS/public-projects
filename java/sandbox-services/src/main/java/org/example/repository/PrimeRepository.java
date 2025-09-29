@@ -10,9 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public interface PrimeRepository extends JpaRepository<Prime, Long> {
 
-    @Modifying
-    @Transactional
-    @Query(value = "DELETE FROM prime", nativeQuery = true)
-    void truncateTable();
-
+  @Modifying
+  @Transactional
+  @Query(value = "DELETE FROM prime", nativeQuery = true)
+  void truncateTable();
 }

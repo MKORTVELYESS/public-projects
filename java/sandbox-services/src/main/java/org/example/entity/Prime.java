@@ -11,16 +11,22 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Prime {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    private Long position;
+  private Long position;
 
-    private Long prime;
+  private Long prime;
 
-    public Prime(long pos, long val) {
-        this.position = pos;
-        this.prime = val;
-    }
+  public Prime(long pos, long val) {
+    this.position = pos;
+    this.prime = val;
+  }
+
+  public Prime(long id, long pos, long val) {
+    this.id = id;
+    this.position = pos;
+    this.prime = val;
+  }
 }

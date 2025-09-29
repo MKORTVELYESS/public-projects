@@ -7,9 +7,12 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 import org.example.controller.Controller;
 import org.example.entity.HttpRequestLog;
+import org.example.entity.Prime;
 import org.example.repository.HttpRequestLogRepository;
+import org.example.repository.PrimeRepository;
 import org.example.util.DateTimeUtil;
 import org.example.util.SystemTimeSource;
 import org.junit.jupiter.api.Test;
@@ -40,13 +43,14 @@ class ControllerTest {
   public ControllerTest(
       SystemTimeSource systemTimeSource,
       Controller controller,
-      HttpRequestLogRepository logRepository) {
+      HttpRequestLogRepository logRepository,
+      PrimeRepository primeRepository) {
     this.mockSystemTimeSource = systemTimeSource;
     this.controller = controller;
   }
 
   @Autowired private HttpRequestLogRepository logRepository;
-
+  @Autowired private PrimeRepository primeRepository;
   @Autowired private MockMvc mockMvc;
 
   private RequestPostProcessor remoteAddr(String ip) {
@@ -145,5 +149,19 @@ class ControllerTest {
         .andExpect(MockMvcResultMatchers.status().isOk());
     sw.stop();
     System.out.println(sw.getTotalTimeSeconds());
+  }
+
+  @Test
+  void shouldGenerateFirst10Primes() throws Exception {
+    int n = 10;
+    mockMvc
+        .perform(MockMvcRequestBuilders.get("/api/generate-first-n-primes/{n}", n))
+        .andExpect(MockMvcResultMatchers.status().isOk());
+
+    List<Integer> integers = List.of(2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31);
+    List<Prime> actual = primeRepository.findAll();
+    List<Prime> expected =
+        IntStream.range(0, n).mapToObj(i -> new Prime(i + 1, i + 1, integers.get(i))).toList();
+    assertEquals(expected, actual);
   }
 }
