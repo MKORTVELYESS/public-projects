@@ -12,6 +12,6 @@ public interface PrimeRepository extends JpaRepository<Prime, Long> {
 
   @Modifying
   @Transactional
-  @Query(value = "DELETE FROM prime", nativeQuery = true)
+  @Query(value = "TRUNCATE TABLE prime RESTART IDENTITY", nativeQuery = true)
   void truncateTable();
 }

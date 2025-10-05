@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -158,10 +159,11 @@ class ControllerTest {
         .perform(MockMvcRequestBuilders.get("/api/generate-first-n-primes/{n}", n))
         .andExpect(MockMvcResultMatchers.status().isOk());
 
-    List<Integer> integers = List.of(2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31);
+    List<Long> integers = List.of(2L, 3L, 5L, 7L, 11L, 13L, 17L, 19L, 23L, 29L, 31L);
     List<Prime> actual = primeRepository.findAll();
     List<Prime> expected =
-        IntStream.range(0, n).mapToObj(i -> new Prime(i + 1, i + 1, integers.get(i))).toList();
+        IntStream.range(0, n).mapToObj(i -> new Prime(i + 1L, i + 1L, integers.get(i))).toList();
+    actual.sort(Comparator.comparing(Prime::getPosition));
     assertEquals(expected, actual);
   }
 }

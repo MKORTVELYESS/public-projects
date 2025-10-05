@@ -1,30 +1,25 @@
 package org.example.service;
 
-import static org.example.util.NumberUtil.isPrime;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.*;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.LongStream;
 import org.example.entity.Prime;
 import org.example.repository.PrimeRepository;
+import org.example.util.NumberUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StopWatch;
 
 @Service
 public class PrimeService {
   private final PrimeRepository primeRepository;
-  private static final int BATCH_SIZE = 40000;
+  private static final int BATCH_SIZE = 5000;
   private static final Logger logger = LoggerFactory.getLogger(PrimeService.class);
   private final Executor virtualExecutor =
       Executors.newThreadPerTaskExecutor(Thread.ofVirtual().factory());
-  private final Semaphore semaphore = new Semaphore(20); // limit to 10 concurrent inserts
+  private final Semaphore semaphore = new Semaphore(10); // limit to 10 concurrent inserts
 
   public PrimeService(PrimeRepository primeRepository) {
     this.primeRepository = primeRepository;
@@ -33,10 +28,6 @@ public class PrimeService {
   public void generateAndSavePrimes(int firstN) {
     logger.info(
         "Got request to generate first {} prime numbers and persisting into the database", firstN);
-    List<Prime> batch = new ArrayList<>(BATCH_SIZE);
-    List<CompletableFuture<Void>> futures = new ArrayList<>();
-    AtomicInteger completedBatchesCount = new AtomicInteger();
-    AtomicLong position = new AtomicLong(1);
 
     logger.info("Clearing table first...");
     primeRepository.truncateTable();
@@ -53,47 +44,84 @@ public class PrimeService {
         "Start generating numbers from {} until the persisted batches count matches the expected {}",
         seed,
         targetBatchesCount);
-    LongStream.iterate(
-            seed,
-            i -> batch.size() < firstN && completedBatchesCount.get() <= targetBatchesCount,
-            i -> i + 1)
-        .peek(
-            i -> {
-              if (batch.size() >= BATCH_SIZE) {
-                logger.info(
-                    "BATCH FULL! - Batch size is {} which is greater or equal to the max batch size of {}",
-                    batch.size(),
-                    BATCH_SIZE);
-                futures.add(persistPrimes(new ArrayList<>(batch)));
-                batch.clear();
-                logger.info("Incrementing target batch count now");
-                completedBatchesCount.addAndGet(1);
-              }
-            })
-        .forEach(
-            i -> {
-              if (isPrime(i)) batch.add(new Prime(position.getAndIncrement(), i));
-            });
 
-    logger.info("Will check if current batch has remaining elements... persisting the rest if any");
-    if (!batch.isEmpty()) futures.add(persistPrimes(new ArrayList<>(batch)));
+    BlockingQueue<Prime> primes = createQueueOfPrimes(firstN, seed);
+    logger.info("Number generation done... Will assign position now");
 
-    CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+    assignPosition(primes);
+    logger.info("Assigned positions, will insert results to database in batches now...");
+
+    BlockingQueue<Prime> insertables = new LinkedBlockingQueue<>();
+    primes.drainTo(insertables, firstN);
+    List<CompletableFuture<Void>> dbCalls = batchInsertPrimes(insertables);
+
+    logger.info("Done issuing database operations, will wait for all of them to complete");
+    CompletableFuture.allOf(dbCalls.toArray(new CompletableFuture[0])).join();
 
     logger.info("Inserted first {} primes to table", firstN);
   }
 
-  private CompletableFuture<Void> persistPrimes(List<Prime> batch) {
+  private List<CompletableFuture<Void>> batchInsertPrimes(BlockingQueue<Prime> primes) {
+    List<CompletableFuture<Void>> dbCalls = new ArrayList<>();
+    while (!primes.isEmpty()) {
+      HashSet<Prime> batch = new HashSet<>();
+      primes.drainTo(batch, BATCH_SIZE);
+      CompletableFuture<Void> dbOp = persistPrimes(batch);
+      dbCalls.add(dbOp);
+    }
+    return dbCalls;
+  }
+
+  private static BlockingQueue<Prime> assignPosition(BlockingQueue<Prime> primes) {
+    TreeSet<Prime> allSorted = new TreeSet<>();
+    primes.drainTo(allSorted);
+
+    logger.info("Tree set created of {} items", allSorted.size());
+    logger.info("Start assigning positions in memory to primes");
+    AtomicLong pos = new AtomicLong(1);
+    for (Prime current : allSorted) {
+      current.setPosition(pos.getAndIncrement());
+    }
+    logger.info("Done assigning positions");
+
+    logger.info("TreeSet will be converted to queue now");
+    primes.addAll(allSorted);
+    logger.info("Created queue");
+    return primes;
+  }
+
+  private static BlockingQueue<Prime> createQueueOfPrimes(int firstN, int seed) {
+    final BlockingQueue<Prime> calculatedPrimes = new LinkedBlockingQueue<>();
+    LongStream.iterate(seed, i -> calculatedPrimes.size() < firstN, i -> i + 1)
+        .parallel()
+        .filter(NumberUtil::isPrime)
+        .mapToObj(Prime::new)
+        .forEach(calculatedPrimes::add);
+    return calculatedPrimes;
+  }
+
+  private CompletableFuture<Void> persistPrimes(Set<Prime> batch) {
     logger.info("Received batch to persist... Will schedule async task to persist this batch");
     return CompletableFuture.runAsync(
         () -> {
+          StopWatch databaseTime = new StopWatch();
           try {
+            StopWatch semaphoreWait = new StopWatch();
+            semaphoreWait.start();
             semaphore.acquire();
+            semaphoreWait.stop();
+            databaseTime.start();
+            logger.info(
+                "Waited {} seconds in queue for db semaphore", semaphoreWait.getTotalTimeSeconds());
             primeRepository.saveAll(batch);
           } catch (InterruptedException e) {
             logger.error("Semaphore interrupted", e);
           } finally {
             semaphore.release();
+            databaseTime.stop();
+            logger.info(
+                "Waited {} seconds for database to complete the batch insert operation",
+                databaseTime.getTotalTimeSeconds());
           }
         },
         virtualExecutor);
