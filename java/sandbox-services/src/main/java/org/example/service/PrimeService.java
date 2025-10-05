@@ -14,12 +14,15 @@ import org.springframework.util.StopWatch;
 
 @Service
 public class PrimeService {
-  private final PrimeRepository primeRepository;
+  private static final int CONCURRENT_DB_OPERATION_PERMITS = 10;
   private static final int BATCH_SIZE = 5000;
+  private static final int GENERATION_SEED = 2;
   private static final Logger logger = LoggerFactory.getLogger(PrimeService.class);
   private final Executor virtualExecutor =
       Executors.newThreadPerTaskExecutor(Thread.ofVirtual().factory());
-  private final Semaphore semaphore = new Semaphore(10); // limit to 10 concurrent inserts
+  private final Semaphore semaphore =
+      new Semaphore(CONCURRENT_DB_OPERATION_PERMITS); // limit to 10 concurrent inserts
+  private final PrimeRepository primeRepository;
 
   public PrimeService(PrimeRepository primeRepository) {
     this.primeRepository = primeRepository;
@@ -39,26 +42,30 @@ public class PrimeService {
         firstN,
         BATCH_SIZE);
 
-    int seed = 2;
     logger.info(
         "Start generating numbers from {} until the persisted batches count matches the expected {}",
-        seed,
+        GENERATION_SEED,
         targetBatchesCount);
 
-    BlockingQueue<Prime> primes = createQueueOfPrimes(firstN, seed);
+    BlockingQueue<Prime> primes = createQueueOfPrimes(firstN, GENERATION_SEED);
     logger.info("Number generation done... Will assign position now");
 
-    assignPosition(primes);
+    sortAndEnrichQueueMembers(primes);
     logger.info("Assigned positions, will insert results to database in batches now...");
 
-    BlockingQueue<Prime> insertables = new LinkedBlockingQueue<>();
-    primes.drainTo(insertables, firstN);
+    BlockingQueue<Prime> insertables = limitQueueSize(firstN, primes);
     List<CompletableFuture<Void>> dbCalls = batchInsertPrimes(insertables);
 
     logger.info("Done issuing database operations, will wait for all of them to complete");
     CompletableFuture.allOf(dbCalls.toArray(new CompletableFuture[0])).join();
 
     logger.info("Inserted first {} primes to table", firstN);
+  }
+
+  private BlockingQueue<Prime> limitQueueSize(int firstN, BlockingQueue<Prime> primes) {
+    BlockingQueue<Prime> insertables = new LinkedBlockingQueue<>();
+    primes.drainTo(insertables, firstN);
+    return insertables;
   }
 
   private List<CompletableFuture<Void>> batchInsertPrimes(BlockingQueue<Prime> primes) {
@@ -72,25 +79,28 @@ public class PrimeService {
     return dbCalls;
   }
 
-  private static BlockingQueue<Prime> assignPosition(BlockingQueue<Prime> primes) {
+  private void sortAndEnrichQueueMembers(BlockingQueue<Prime> primes) {
     TreeSet<Prime> allSorted = new TreeSet<>();
     primes.drainTo(allSorted);
 
     logger.info("Tree set created of {} items", allSorted.size());
+    assignPosition(allSorted);
+
+    logger.info("TreeSet will be converted to queue now");
+    primes.addAll(allSorted);
+    logger.info("Created queue");
+  }
+
+  private void assignPosition(TreeSet<Prime> allSorted) {
     logger.info("Start assigning positions in memory to primes");
     AtomicLong pos = new AtomicLong(1);
     for (Prime current : allSorted) {
       current.setPosition(pos.getAndIncrement());
     }
     logger.info("Done assigning positions");
-
-    logger.info("TreeSet will be converted to queue now");
-    primes.addAll(allSorted);
-    logger.info("Created queue");
-    return primes;
   }
 
-  private static BlockingQueue<Prime> createQueueOfPrimes(int firstN, int seed) {
+  private BlockingQueue<Prime> createQueueOfPrimes(int firstN, int seed) {
     final BlockingQueue<Prime> calculatedPrimes = new LinkedBlockingQueue<>();
     LongStream.iterate(seed, i -> calculatedPrimes.size() < firstN, i -> i + 1)
         .parallel()
