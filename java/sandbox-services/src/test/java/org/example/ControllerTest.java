@@ -1,6 +1,7 @@
 package org.example;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.time.OffsetDateTime;
@@ -25,6 +26,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -165,5 +167,26 @@ class ControllerTest {
         IntStream.range(0, n).mapToObj(i -> new Prime(i + 1L, i + 1L, integers.get(i))).toList();
     actual.sort(Comparator.comparing(Prime::getPosition));
     assertEquals(expected, actual);
+  }
+
+  @Test
+  void shouldGiveMaxDelayOnRoute() throws Exception {
+    String from = "LAX";
+    String to = "LAS";
+
+    var sw = new StopWatch();
+    sw.start();
+    MvcResult r =
+        mockMvc
+            .perform(MockMvcRequestBuilders.get("/api/max-flight-delay/{from}/{to}", from, to))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andReturn();
+    sw.stop();
+    String content = r.getResponse().getContentAsString();
+    Double actual = Double.parseDouble(content);
+    assertEquals(35.0, actual);
+    assertTrue(
+        sw.getTotalTimeMillis() < 1000,
+        "The parsing and response to this question should take less than 1000ms");
   }
 }

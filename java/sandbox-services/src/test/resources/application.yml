@@ -8,3 +8,5 @@ spring:
     hibernate:
       ddl-auto: create-drop
     show-sql: true
+flight-delay:
+  filepath: ${user.dir}/src/test/resources/data/flight_data_2024_sample.csv
