@@ -16,7 +16,8 @@ public class FlightDelayService {
 
   private static final Logger log = LoggerFactory.getLogger(FlightDelayService.class);
   private static final char SEPARATOR = ',';
-  private static final DoubleSupplier DEFAULT_DELAY = () -> 0;
+  private static final DoubleSupplier DEFAULT_DELAY =
+      () -> 0; // max delay is 0 if there was no actual flight between FROM airport and TO airport
   private static final int DEPARTURE_DELAY_COLUMN_IDX = 15;
   private static final int FROM_AIRPORT_COLUMN_IDX = 7;
   private static final int TO_AIRPORT_COLUMN_IDX = 10;
@@ -41,7 +42,9 @@ public class FlightDelayService {
                             FROM_AIRPORT_COLUMN_IDX,
                             TO_AIRPORT_COLUMN_IDX,
                             DEPARTURE_DELAY_COLUMN_IDX));
-                return parsedCols.length == 3
+                return parsedCols.length
+                        == 3 // prevent ArrayOutOfBounds and short circuit - if we could not extract
+                    // all 3 we are not interested in the line
                     && from.equals(parsedCols[0])
                     && to.equals(parsedCols[1])
                     && !"".equals(parsedCols[2]);
