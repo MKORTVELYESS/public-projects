@@ -35,7 +35,7 @@ public class FlightDelayService {
           .filter(
               line -> {
                 String[] parsedCols =
-                    parseContentOfColumns(
+                    columnExtractor(
                         line,
                         Set.of(
                             FROM_AIRPORT_COLUMN_IDX,
@@ -47,9 +47,7 @@ public class FlightDelayService {
                     && !"".equals(parsedCols[2]);
               })
           .mapToDouble(
-              l ->
-                  Double.parseDouble(
-                      parseContentOfColumns(l, Set.of(DEPARTURE_DELAY_COLUMN_IDX))[0]))
+              l -> Double.parseDouble(columnExtractor(l, Set.of(DEPARTURE_DELAY_COLUMN_IDX))[0]))
           .max()
           .orElseGet(DEFAULT_DELAY);
     } catch (Exception e) {
@@ -58,35 +56,41 @@ public class FlightDelayService {
     }
   }
 
-  String[] parseContentOfColumns(String line, Set<Integer> columnIndices) {
+  String[] columnExtractor(String parsable, Set<Integer> extractables) {
     StringBuilder result = new StringBuilder();
-    StringBuilder currentColumn = new StringBuilder();
+    StringBuilder cell = new StringBuilder();
     int countQuote = 0;
 
-    int maxColumnIndex =
-        columnIndices.stream().mapToInt(Integer::intValue).max().orElseGet(() -> 0);
-    int currentIndex = 0;
+    int lastExtractableColumn =
+        extractables.stream().mapToInt(Integer::intValue).max().orElseGet(() -> 0);
+    int currColIdx = 0;
 
-    for (int i = 0; i < line.length(); i++) {
-      char c = line.charAt(i);
+    for (int i = 0; i < parsable.length(); i++) {
+      char currentCharacter = parsable.charAt(i);
 
-      if (columnIndices.contains(currentIndex)) {
-        currentColumn.append(c);
+      boolean isExtractableColumn = extractables.contains(currColIdx);
+      if (isExtractableColumn) {
+        cell.append(currentCharacter);
       }
 
-      if (c == FlightDelayService.SEPARATOR && (countQuote & 1) == 0) {
-        if (!currentColumn.isEmpty()) {
-          result.append(currentColumn);
-          currentColumn.setLength(0);
-        }
-        currentIndex++;
-        if (currentIndex > maxColumnIndex) break;
+      boolean notQuoted = (countQuote & 1) == 0;
+      boolean isSeparator = currentCharacter == FlightDelayService.SEPARATOR;
+      boolean shouldStartNewColumn = isSeparator && notQuoted;
+      if (shouldStartNewColumn) {
+        result.append(cell); // save results of this column
+        cell.setLength(0); // new column start --> reset cell to ""
+        currColIdx++;
+        boolean passedAllExtractableColumns = currColIdx > lastExtractableColumn;
+        if (passedAllExtractableColumns) break;
       }
 
-      if (c == '"') countQuote++;
+      boolean isQuote = currentCharacter == '"';
+      if (isQuote) countQuote++;
     }
 
-    result.append(currentColumn);
+    result.append(
+        cell); // case when loop is never broken because the last column is included in the
+    // extractables
     return result.toString().split(String.valueOf(FlightDelayService.SEPARATOR));
   }
 }
