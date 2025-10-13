@@ -189,4 +189,22 @@ class ControllerTest {
         sw.getTotalTimeMillis() < 1000,
         "The parsing and response to this question should take less than 1000ms");
   }
+
+  @Test
+  void shouldGiveTotalLineCountInDataSourceFile() throws Exception {
+    var sw = new StopWatch();
+    sw.start();
+    MvcResult r =
+        mockMvc
+            .perform(MockMvcRequestBuilders.get("/api/flight-delay-data-line-count"))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andReturn();
+    sw.stop();
+    String content = r.getResponse().getContentAsString();
+    Long actual = Long.parseLong(content);
+    assertEquals(10001L, actual);
+    assertTrue(
+        sw.getTotalTimeMillis() < 1000,
+        "The parsing and response to this question should take less than 1000ms");
+  }
 }

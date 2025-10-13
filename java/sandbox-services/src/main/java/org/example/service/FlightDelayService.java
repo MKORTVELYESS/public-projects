@@ -32,7 +32,8 @@ public class FlightDelayService {
     try (final Stream<String> lines = Files.lines(Path.of(dataSourcePath))) {
       log.info("Scanning datasource: {}", dataSourcePath);
       return lines
-          .parallel()
+          .parallel() // on 7MM rows parallel stream performs filter in 3000ms, single stream
+          // performs 9000ms
           .filter(
               line -> {
                 String[] parsedCols =
@@ -53,6 +54,17 @@ public class FlightDelayService {
               l -> Double.parseDouble(columnExtractor(l, Set.of(DEPARTURE_DELAY_COLUMN_IDX))[0]))
           .max()
           .orElseGet(DEFAULT_DELAY);
+    } catch (Exception e) {
+      log.error("Error getting max flight delay", e);
+      throw e;
+    }
+  }
+
+  public Long getFlightCount() throws IOException {
+    try (final Stream<String> lines = Files.lines(Path.of(dataSourcePath))) {
+      log.info("Scanning datasource: {}", dataSourcePath);
+      return lines
+          .count(); // .parallel() does not improve performance, count takes ~2500ms for 7MM rows
     } catch (Exception e) {
       log.error("Error getting max flight delay", e);
       throw e;

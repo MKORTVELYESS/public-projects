@@ -79,4 +79,15 @@ public class Controller {
         r / 60);
     return ResponseEntity.ok(r);
   }
+
+  @GetMapping("/flight-delay-data-line-count")
+  public ResponseEntity<Long> getMaxFlightDelayOnRoute() throws IOException {
+    logger.info("Calculating line count of flight delay full data set");
+    StopWatch sw = new StopWatch();
+    sw.start();
+    var r = flightDelayService.getFlightCount();
+    sw.stop();
+    logger.info("Found line count in {} ms. The line count is: {}", sw.getTotalTimeMillis(), r);
+    return ResponseEntity.ok(r);
+  }
 }
