@@ -15,6 +15,8 @@ val javaVersion: String by project
 val spotbugsToolVersion: String by project
 val jacocoToolVersion: String by project
 val lombokVersion: String by project
+val freemarkerVersion: String by project
+val varvVersion: String by project
 val mockitoAgent = configurations.create("mockitoAgent")
 
 java {
@@ -55,6 +57,8 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.freemarker:freemarker:$freemarkerVersion")
+    implementation("io.vavr:vavr:$varvVersion")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("com.h2database:h2")
@@ -79,6 +83,7 @@ tasks.withType<SpotBugsTask>().configureEach{
     reports.create("html"){
         required = true
     }
+    excludeFilter.set(file("$rootDir/config/spotbugs-exclude.xml"))
 }
 
 tasks.jacocoTestReport {

@@ -1,0 +1,13 @@
+App Info:
+Name: SandboxApp
+Version: 1.2.3
+
+Database:
+Host: localhost
+Port: 5,432
+User: admin
+
+Regions:
+- HK: Hong Kong
+- LN: London
+- NY: New York

@@ -4,6 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Comparator;
@@ -206,5 +209,24 @@ class ControllerTest {
     assertTrue(
         sw.getTotalTimeMillis() < 1000,
         "The parsing and response to this question should take less than 1000ms");
+  }
+
+  @Test
+  void shouldResolveTemplate() throws Exception {
+    var expectedFilePath = Path.of("src/test/resources/data/resolved-template-expected.txt");
+    var actualRequestBodyPath = Path.of("src/test/resources/data/resolved-template-test.json");
+    var testTemplateName = "resolved-template.ftl";
+    var jsonBody = Files.readString(actualRequestBodyPath, StandardCharsets.UTF_8);
+    MvcResult r =
+        mockMvc
+            .perform(
+                MockMvcRequestBuilders.post("/api/resolved-template/" + testTemplateName)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(jsonBody))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andReturn();
+    String actual = r.getResponse().getContentAsString();
+    String expected = Files.readString(expectedFilePath, StandardCharsets.UTF_8);
+    assertEquals(expected, actual);
   }
 }

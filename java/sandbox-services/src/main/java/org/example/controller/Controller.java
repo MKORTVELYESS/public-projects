@@ -4,10 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import org.example.service.FlightDelayService;
-import org.example.service.InfoService;
-import org.example.service.JilService;
-import org.example.service.PrimeService;
+import org.example.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -24,16 +21,19 @@ public class Controller {
   private final JilService jilService;
   private final PrimeService primeService;
   private final FlightDelayService flightDelayService;
+  private final ResolvedTemplateService resolvedTemplateService;
 
   public Controller(
       InfoService infoService,
       JilService jilService,
       PrimeService primeService,
-      FlightDelayService flightDelayService) {
+      FlightDelayService flightDelayService,
+      ResolvedTemplateService resolvedTemplateService) {
     this.jilService = jilService;
     this.infoService = infoService;
     this.primeService = primeService;
     this.flightDelayService = flightDelayService;
+    this.resolvedTemplateService = resolvedTemplateService;
   }
 
   @GetMapping("/health")
@@ -89,5 +89,18 @@ public class Controller {
     sw.stop();
     logger.info("Found line count in {} ms. The line count is: {}", sw.getTotalTimeMillis(), r);
     return ResponseEntity.ok(r);
+  }
+
+  @PostMapping("/resolved-template/{template-name}")
+  public ResponseEntity<String> getResolvedTemplate(
+      @PathVariable("template-name") String templateName,
+      @RequestBody Map<String, Object> payload) {
+    logger.info("Resolving template: {}", templateName);
+    StopWatch sw = new StopWatch();
+    sw.start();
+    var result = resolvedTemplateService.resolve(templateName, payload);
+    logger.info("Resolved template with data");
+    sw.stop();
+    return ResponseEntity.ok(result);
   }
 }

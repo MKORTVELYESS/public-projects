@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/keep-alive-service.iml" filepath="$PROJECT_DIR$/.idea/modules/keep-alive-service.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/keep-alive-service-build.iml" filepath="$PROJECT_DIR$/.idea/modules/keep-alive-service-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/keep-alive-service/keep-alive-service.keep-alive-service-build.iml" filepath="$PROJECT_DIR$/.idea/modules/keep-alive-service/keep-alive-service.keep-alive-service-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/keep-alive-service/keep-alive-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/keep-alive-service/keep-alive-service.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/keep-alive-service/keep-alive-service.test.iml" filepath="$PROJECT_DIR$/.idea/modules/keep-alive-service/keep-alive-service.test.iml" />
     </modules>
   </component>
 </project>

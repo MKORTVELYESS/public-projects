@@ -1,0 +1,21 @@
+<FindBugsFilter>
+
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+        <Class name=".*"/>
+        <Annotation name="org.springframework.stereotype.Service"/>
+    </Match>
+
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+        <Class name=".*"/>
+        <Annotation name="org.springframework.web.bind.annotation.RestController"/>
+    </Match>
+
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+        <Class name=".*"/>
+        <Annotation name="org.springframework.stereotype.Controller"/>
+    </Match>
+
+</FindBugsFilter>

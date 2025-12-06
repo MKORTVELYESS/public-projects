@@ -18,3 +18,5 @@ spring:
         format_sql: true
 flight-delay:
   filepath: C:\Users\kvint\Downloads\flight_data_2024.csv
+templates:
+  dir: "src/main/resources/templates"
