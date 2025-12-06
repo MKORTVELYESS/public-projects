@@ -103,8 +103,8 @@ public class Controller {
     StopWatch sw = new StopWatch();
     sw.start();
     var result = resolvedTemplateService.resolve(templateName, payload);
-    logger.info("Resolved template with data");
     sw.stop();
+    logger.info("Resolution took {} ms", sw.getTotalTimeMillis());
     return ResponseEntity.ok(result);
   }
 }

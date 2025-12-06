@@ -5,6 +5,7 @@ import freemarker.template.Template;
 import io.vavr.control.Try;
 import java.io.StringWriter;
 import java.util.Map;
+import org.example.util.DataUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ public class ResolvedTemplateService {
   public ResolvedTemplateService() {}
 
   public String resolve(String template, Map<String, Object> data) {
+    log.info("Trying to get template with id: {}", template);
     return Try.of(() -> cfg.getTemplate(template))
         .flatMapTry(t -> eval(data, t))
         .onFailure(
@@ -29,10 +31,15 @@ public class ResolvedTemplateService {
   }
 
   private Try<String> eval(Map<String, Object> data, Template template) {
+    log.info(
+        "Got template {}. Trying to evaluate template with data keys of size {}",
+        template.getName(),
+        DataUtil.countAllKeys(data));
     return Try.of(
         () -> {
           StringWriter writer = new StringWriter();
           template.process(data, writer);
+          log.info("Writing result now");
           return writer.toString();
         });
   }
