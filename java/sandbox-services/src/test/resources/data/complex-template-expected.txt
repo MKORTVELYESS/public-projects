@@ -1,0 +1,50 @@
+==============================
+Company Report
+Generated on: 2025-12-06T12:00:00
+==============================
+
+Report: End-of-Year Customer Orders
+
+--------------------------------------
+
+Customer: ALICE
+Email: alice@example.com
+Age: 34
+VIP: YES
+Orders:
+    - Order ID: 101
+      Total: £250.50
+      Shipped: Yes
+      Items:
+          * Widget A x 2 (£50.00 each)
+          * Widget B x 3 (£50.50 each)
+      Discounted Total: £225.45
+    - Order ID: 102
+      Total: £120.00
+      Shipped: No
+      Items:
+          * Widget C x 1 (£120.00 each)
+      Discounted Total: £120.00
+--------------------------------------
+Customer: BOB
+Email: bob@example.com
+Age: 28
+VIP: NO
+Orders:
+    - Order ID: 103
+      Total: £75.00
+      Shipped: Yes
+      Items:
+          * Widget D x 5 (£15.00 each)
+          * Phone X x 1 (£150.00 each)
+          * Book Y x 2 (£3.00 each)
+          * Food M x 1 (£5.00 each)
+      Discounted Total: £71.25
+--------------------------------------
+
+Special Event: Black Friday Sale
+
+Total Tax: £92.59
+Random String: ===freemarker-test===
+
+

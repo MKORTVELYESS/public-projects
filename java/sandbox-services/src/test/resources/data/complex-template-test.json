@@ -1,0 +1,57 @@
+{
+  "timestamp": "2025-12-06T12:00:00",
+  "reportTitle": "End-of-Year Customer Orders",
+  "customers": [
+    {
+      "name": "Alice",
+      "email": "alice@example.com",
+      "age": 34,
+      "vip": true,
+      "orders": [
+        {
+          "id": 101,
+          "total": 250.50,
+          "discount": 10,
+          "shipped": true,
+          "items": [
+            {"name": "Widget A", "qty": 2, "price": 50.00},
+            {"name": "Widget B", "qty": 3, "price": 50.50}
+          ]
+        },
+        {
+          "id": 102,
+          "total": 120.00,
+          "shipped": false,
+          "items": [
+            {"name": "Widget C", "qty": 1, "price": 120.00}
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Bob",
+      "email": "bob@example.com",
+      "age": 28,
+      "orders": [
+        {
+          "id": 103,
+          "total": 75.00,
+          "discount": 5,
+          "shipped": true,
+          "items": [
+            {"name": "Widget D", "qty": 5, "price": 15.00},
+            {"name": "Phone X", "qty": 1, "price": 150.00},
+            {"name": "Book Y", "qty": 2, "price": 3.00},
+            {"name": "Food M", "qty": 1, "price": 5.00}
+          ]
+        }
+      ]
+    }
+  ],
+  "specialEvent": {
+    "name": "Black Friday Sale"
+  },
+  "promotion": {
+    "description": "10% off all orders"
+  }
+}

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import org.example.service.*;
+import org.example.util.SystemTimeSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -22,18 +23,21 @@ public class Controller {
   private final PrimeService primeService;
   private final FlightDelayService flightDelayService;
   private final ResolvedTemplateService resolvedTemplateService;
+  private final SystemTimeSource systemTimeSource;
 
   public Controller(
       InfoService infoService,
       JilService jilService,
       PrimeService primeService,
       FlightDelayService flightDelayService,
-      ResolvedTemplateService resolvedTemplateService) {
+      ResolvedTemplateService resolvedTemplateService,
+      SystemTimeSource systemTimeSource) {
     this.jilService = jilService;
     this.infoService = infoService;
     this.primeService = primeService;
     this.flightDelayService = flightDelayService;
     this.resolvedTemplateService = resolvedTemplateService;
+    this.systemTimeSource = systemTimeSource;
   }
 
   @GetMapping("/health")

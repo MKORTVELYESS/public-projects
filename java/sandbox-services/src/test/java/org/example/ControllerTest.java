@@ -229,4 +229,23 @@ class ControllerTest {
     String expected = Files.readString(expectedFilePath, StandardCharsets.UTF_8);
     assertEquals(expected, actual);
   }
+
+  @Test
+  void shouldResolveTemplate2() throws Exception {
+    var expectedFilePath = Path.of("src/test/resources/data/complex-template-expected.txt");
+    var actualRequestBodyPath = Path.of("src/test/resources/data/complex-template-test.json");
+    var testTemplateName = "complex-template.ftl";
+    var jsonBody = Files.readString(actualRequestBodyPath, StandardCharsets.UTF_8);
+    MvcResult r =
+        mockMvc
+            .perform(
+                MockMvcRequestBuilders.post("/api/resolved-template/" + testTemplateName)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(jsonBody))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andReturn();
+    String actual = r.getResponse().getContentAsString();
+    String expected = Files.readString(expectedFilePath, StandardCharsets.UTF_8);
+    assertEquals(expected, actual);
+  }
 }
