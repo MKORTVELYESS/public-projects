@@ -5,7 +5,7 @@ import java.util.stream.Stream;
 
 public final class DataUtil {
 
-  public static int countAllKeys(Object data) {
+  public static int countValues(Object data) {
     return count(data);
   }
 

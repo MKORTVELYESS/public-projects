@@ -20,7 +20,7 @@ class DataUtilTest {
 
     Map<String, Object> data = objectMapper.readValue(json, Map.class);
 
-    var actual = DataUtil.countAllKeys(data);
+    var actual = DataUtil.countValues(data);
     var expected = 43;
     assertEquals(expected, actual);
   }

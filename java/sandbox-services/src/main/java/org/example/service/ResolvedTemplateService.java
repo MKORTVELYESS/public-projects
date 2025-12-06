@@ -34,7 +34,7 @@ public class ResolvedTemplateService {
     log.info(
         "Got template {}. Trying to evaluate template with data keys of size {}",
         template.getName(),
-        DataUtil.countAllKeys(data));
+        DataUtil.countValues(data));
     return Try.of(
         () -> {
           StringWriter writer = new StringWriter();
