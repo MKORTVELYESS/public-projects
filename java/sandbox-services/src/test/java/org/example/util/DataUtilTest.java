@@ -14,7 +14,7 @@ class DataUtilTest {
   private final ObjectMapper objectMapper = new ObjectMapper();
 
   @Test
-  void countAllKeys() throws IOException {
+  void countValues() throws IOException {
     var jsonPath = Path.of("src/test/resources/data/complex-template-test.json");
     var json = Files.readString(jsonPath, StandardCharsets.UTF_8);
 
