@@ -2,12 +2,16 @@ package org.example.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.example.service.*;
 import org.example.util.SystemTimeSource;
+import org.example.util.ThrottleUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +19,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api")
 public class Controller {
+
+  @Value("${network.throttle.base-millis}")
+  private long baseMillis;
+
+  @Value("${network.throttle.extra-millis}")
+  private int extraMillis;
 
   private static final Logger logger = LoggerFactory.getLogger(Controller.class);
 
@@ -24,6 +34,8 @@ public class Controller {
   private final FlightDelayService flightDelayService;
   private final ResolvedTemplateService resolvedTemplateService;
   private final SystemTimeSource systemTimeSource;
+  private final HtmlFetchService htmlFetchService;
+  private final TapologyService tapologyService;
 
   public Controller(
       InfoService infoService,
@@ -31,13 +43,17 @@ public class Controller {
       PrimeService primeService,
       FlightDelayService flightDelayService,
       ResolvedTemplateService resolvedTemplateService,
-      SystemTimeSource systemTimeSource) {
+      SystemTimeSource systemTimeSource,
+      HtmlFetchService htmlFetchService,
+      TapologyService tapologyService) {
     this.jilService = jilService;
     this.infoService = infoService;
     this.primeService = primeService;
     this.flightDelayService = flightDelayService;
     this.resolvedTemplateService = resolvedTemplateService;
     this.systemTimeSource = systemTimeSource;
+    this.htmlFetchService = htmlFetchService;
+    this.tapologyService = tapologyService;
   }
 
   @GetMapping("/health")
@@ -106,5 +122,34 @@ public class Controller {
     sw.stop();
     logger.info("Resolution took {} ms", sw.getTotalTimeMillis());
     return ResponseEntity.ok(result);
+  }
+
+  @GetMapping("/fetch-html")
+  public String fetchHtml(@RequestParam String url) {
+    return htmlFetchService.fetchHtml(url);
+  }
+
+  @GetMapping("/resolve-fighters")
+  public String resolveFighters(@RequestBody String url) {
+    List<String> urls = Arrays.stream(url.split(",")).toList();
+    urls.forEach(
+        (u) -> {
+          ThrottleUtil.throttle(baseMillis, extraMillis);
+          logger.info("Persisting {}", u);
+          tapologyService.printFighters(u);
+        });
+    return "Done";
+  }
+
+  @GetMapping("/height-win-rate-correl-by-weight-group")
+  public String resolveFighters() {
+    tapologyService.getHeightWinRateCorrelationsByWeightGroup();
+    return "Done";
+  }
+
+  @GetMapping("/persist-fighter-details")
+  public String persistFighterDetails() {
+    tapologyService.persistAllFighterDetails();
+    return "Done";
   }
 }

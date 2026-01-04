@@ -99,6 +99,8 @@ public class HttpRequestLog {
 
   private String method;
   private String path;
+
+  @Column(length = 4000)
   private String queryParams;
 
   @Lob

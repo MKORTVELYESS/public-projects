@@ -17,6 +17,10 @@ val jacocoToolVersion: String by project
 val lombokVersion: String by project
 val freemarkerVersion: String by project
 val varvVersion: String by project
+val jsoupVersion: String by project
+val guavaVersion: String by project
+val apacheCommonsMathVersion: String by project
+val okhttpVersion: String by project
 val mockitoAgent = configurations.create("mockitoAgent")
 
 java {
@@ -59,6 +63,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.freemarker:freemarker:$freemarkerVersion")
     implementation("io.vavr:vavr:$varvVersion")
+    implementation("org.jsoup:jsoup:$jsoupVersion")
+    implementation("com.google.guava:guava:$guavaVersion")
+    implementation("org.apache.commons:commons-math3:$apacheCommonsMathVersion")
+    implementation("com.squareup.okhttp3:okhttp:$okhttpVersion")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("com.h2database:h2")

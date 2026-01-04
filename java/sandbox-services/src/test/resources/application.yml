@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
     driver-class-name: org.h2.Driver
     username: sa
     password:
@@ -12,3 +12,13 @@ flight-delay:
   filepath: ${user.dir}/src/test/resources/data/flight_data_2024_sample.csv
 templates:
   dir: "src/main/resources/templates"
+proxy:
+  host: localhost
+  port: 0000
+  user: testuser
+  password: testpassword
+network:
+  use-okhttp: false
+  throttle:
+    base-millis: 500
+    extra-millis: 2500
