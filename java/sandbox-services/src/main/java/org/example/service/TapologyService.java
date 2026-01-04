@@ -9,8 +9,10 @@ import java.util.stream.Collectors;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.example.entity.*;
+import org.example.repository.BoutRepository;
 import org.example.repository.FighterDetailsRepository;
 import org.example.repository.FighterRepository;
+import org.example.util.FightDetailsExtractor;
 import org.example.util.StandardDetailsExtractor;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -28,6 +30,7 @@ public class TapologyService {
   private final ResolveDocumentService resolveDocumentService;
   private final FighterRepository fighterRepository;
   private final FighterDetailsRepository fighterDetailsRepository;
+  private final BoutRepository boutRepository;
   private final Pattern heightPattern = Pattern.compile("(\\d{3})\\s*cm");
   private final Pattern recordPattern = Pattern.compile("(\\d+)-(\\d+)-(\\d+)");
 
@@ -35,11 +38,13 @@ public class TapologyService {
       HtmlFetchService htmlFetchService,
       ResolveDocumentService resolveDocumentService,
       FighterRepository fighterRepository,
-      FighterDetailsRepository fighterDetailsRepository) {
+      FighterDetailsRepository fighterDetailsRepository,
+      BoutRepository boutRepository) {
     this.htmlFetchService = htmlFetchService;
     this.resolveDocumentService = resolveDocumentService;
     this.fighterRepository = fighterRepository;
     this.fighterDetailsRepository = fighterDetailsRepository;
+    this.boutRepository = boutRepository;
   }
 
   public List<Fighter> listFighters(String url) {
@@ -84,8 +89,10 @@ public class TapologyService {
     String html = htmlFetchService.fetchHtml(url);
     Document document = resolveDocumentService.resolveDocument(html);
     FighterRawDetails raw = StandardDetailsExtractor.extract(document);
+    List<Bout> bouts = FightDetailsExtractor.extract(document);
     FighterDetails details = StandardDetailsExtractor.convert(raw, id);
     fighterDetailsRepository.save(details);
+    boutRepository.saveAll(bouts);
   }
 
   public void getHeightWinRateCorrelationsByWeightGroup() {
