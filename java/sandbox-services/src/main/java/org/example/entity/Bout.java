@@ -15,6 +15,7 @@ public class Bout {
   private String division;
   private String boutId;
   private String method;
+  private String fighterId;
   private String opponentId;
   private String boutPageId;
   private String fightShortDescription;
@@ -75,7 +76,15 @@ public class Bout {
     this.method = method;
   }
 
-  public String getOpponentId() {
+    public String getFighterId() {
+        return fighterId;
+    }
+
+    public void setFighterId(String fighterId) {
+        this.fighterId = fighterId;
+    }
+
+    public String getOpponentId() {
     return opponentId;
   }
 

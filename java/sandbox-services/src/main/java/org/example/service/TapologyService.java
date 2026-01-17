@@ -79,18 +79,18 @@ public class TapologyService {
         .filter(f -> !alreadyHasDetails.contains(f.getId()))
         .forEach(
             f -> {
-              persistFighterDetails(f.getId());
+              persistFighterDetails(f);
             });
   }
 
-  public void persistFighterDetails(String id) {
-    String url = FIGHTER_DETAILS_BASE_URL.concat(id);
+  public void persistFighterDetails(Fighter fighter) {
+    String url = FIGHTER_DETAILS_BASE_URL.concat(fighter.getId());
     log.info("Fetching: {}", url);
     String html = htmlFetchService.fetchHtml(url);
     Document document = resolveDocumentService.resolveDocument(html);
     FighterRawDetails raw = StandardDetailsExtractor.extract(document);
-    List<Bout> bouts = FightDetailsExtractor.extract(document);
-    FighterDetails details = StandardDetailsExtractor.convert(raw, id);
+    List<Bout> bouts = FightDetailsExtractor.extract(document, fighter.getId());
+    FighterDetails details = StandardDetailsExtractor.convert(raw, fighter.getId());
     fighterDetailsRepository.save(details);
     boutRepository.saveAll(bouts);
   }

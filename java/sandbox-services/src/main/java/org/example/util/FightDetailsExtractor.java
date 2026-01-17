@@ -5,8 +5,8 @@ import java.util.stream.Collectors;
 
 import io.vavr.CheckedFunction0;
 import io.vavr.control.Try;
-import org.example.entity.mma.Bout;
-import org.example.entity.mma.Fighter;
+import org.example.entity.Bout;
+import org.example.entity.Fighter;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 public class FightDetailsExtractor {
     private static final Logger logger = LoggerFactory.getLogger(FightDetailsExtractor.class);
 
-    public static List<Bout> extract(Document doc, Fighter fighter) {
+    public static List<Bout> extract(Document doc, String fighterId) {
         return Try.of(() -> doc.selectFirst("section.fighterFightResults"))
                 .map(section ->
                         {
@@ -24,11 +24,11 @@ public class FightDetailsExtractor {
                                     .map(b -> {
                                         Bout bout = new Bout();
 
-                                        bout.setFighter(fighter);
+                                        bout.setFighterId(fighterId);
 
                                         String boutId = b.id();
 
-                                        bout.setId(fighter.getId() + "-" + boutId);
+                                        bout.setId(fighterId + "-" + boutId);
 
                                         bout.setStatus(tryGet("status", boutId,
                                                 () -> b.attr("data-status")));
@@ -39,7 +39,7 @@ public class FightDetailsExtractor {
                                         bout.setDivision(tryGet("division", boutId,
                                                 () -> b.attr("data-division")));
 
-                                        bout.setBoutUrl(tryGet("boutId", boutId,
+                                        bout.setBoutId(tryGet("boutId", boutId,
                                                 () -> b.attr("data-bout-id")));
 
                                         bout.setMethod(tryGet("method", boutId,
@@ -95,7 +95,7 @@ public class FightDetailsExtractor {
                                         bout.setDetails(
                                                 tryGet("details", boutId, () -> {
                                                     Element detailRows =
-                                                            doc.selectFirst("div#detail-rows-" + bout.getBoutUrl());
+                                                            doc.selectFirst("div#detail-rows-" + bout.getBoutId());
 
                                                     return detailRows.select("> div").stream()
                                                             .map(row -> row.select("span"))
