@@ -2,99 +2,133 @@ package org.example.util;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import org.example.entity.Bout;
+
+import io.vavr.CheckedFunction0;
+import io.vavr.control.Try;
+import org.example.entity.mma.Bout;
+import org.example.entity.mma.Fighter;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FightDetailsExtractor {
-  public static List<Bout> extract(Document doc) {
-    var fighterFightResults = Optional.ofNullable(doc.selectFirst("section.fighterFightResults"));
-    return fighterFightResults
-        .get()
-        .selectStream("div[data-fighter-bout-target=bout]")
-        .map(
-            (b) -> {
-              Bout bout = new Bout();
-              bout.setId(b.id());
-              String status = b.attr("data-status");
-              bout.setStatus(status);
-              String sport = b.attr("data-sport");
-              bout.setSport(sport);
-              String division = b.attr("data-division");
-              bout.setDivision(division);
-              String boutId = b.attr("data-bout-id");
-              bout.setBoutId(boutId);
-              String methodCode =
-                  Optional.ofNullable(b.selectFirst("div.\\-rotate-90"))
-                      .map(Element::text)
-                      .orElse(null);
-              bout.setMethod(methodCode);
-              String opponentId =
-                  Arrays.stream(
-                          Objects.requireNonNull(b.selectFirst("a[title$=Fighter Page]"))
-                              .attr("href")
-                              .split("/"))
-                      .toList()
-                      .getLast();
-              bout.setOpponentId(opponentId);
+    private static final Logger logger = LoggerFactory.getLogger(FightDetailsExtractor.class);
 
-              Element boutPageElement = b.selectFirst("a[title=Bout Page]");
-              String boutPageId =
-                  Arrays.stream(Objects.requireNonNull(boutPageElement).attr("href").split("/"))
-                      .toList()
-                      .getLast();
-              bout.setBoutPageId(boutPageId);
-              String fightShortDescription = boutPageElement.text();
-              bout.setFightShortDescription(fightShortDescription);
+    public static List<Bout> extract(Document doc, Fighter fighter) {
+        return Try.of(() -> doc.selectFirst("section.fighterFightResults"))
+                .map(section ->
+                        {
+                            assert section != null;
+                            return section.selectStream("div[data-fighter-bout-target=bout]")
+                                    .map(b -> {
+                                        Bout bout = new Bout();
 
-              Element eventPageElem = b.selectFirst("a[title=Event Page]");
-              String eventPage =
-                  Arrays.stream(Objects.requireNonNull(eventPageElem).attr("href").split("/"))
-                      .toList()
-                      .getLast();
-              bout.setEventPageId(eventPage);
-              String eventName = eventPageElem.text();
-              bout.setEventName(eventName);
+                                        bout.setFighter(fighter);
 
-              String fighterRecordBeforeFight =
-                  Optional.ofNullable(b.selectFirst("span[title=Fighter Record Before Fight]"))
-                      .map(Element::text)
-                      .orElse(null);
-              bout.setFighterRecordBeforeFight(fighterRecordBeforeFight);
-              String opponentRecordBeforeFight =
-                  Optional.ofNullable(b.selectFirst("span[title=Opponent Record Before Fight]"))
-                      .map(Element::text)
-                      .orElse(null);
-              bout.setOpponentRecordBeforeFight(opponentRecordBeforeFight);
+                                        String boutId = b.id();
 
-              Element fightYearElement =
-                  b.select("span.font-bold").stream()
-                      .filter(e -> e.text().matches("\\d{4}"))
-                      .toList()
-                      .getFirst();
+                                        bout.setId(fighter.getId() + "-" + boutId);
 
-              String fightYear = fightYearElement.text();
-              bout.setFightYear(fightYear);
-              String fightDay =
-                  Objects.requireNonNull(fightYearElement.nextElementSibling()).text();
-              bout.setFightDay(fightDay);
+                                        bout.setStatus(tryGet("status", boutId,
+                                                () -> b.attr("data-status")));
 
-              Element detailRows = doc.selectFirst("div#detail-rows-" + boutId);
-              Map<String, String> details =
-                  Optional.ofNullable(detailRows).map(el -> el.select("> div")).stream()
-                      .flatMap(Collection::stream)
-                      .map(row -> row.select("span"))
-                      .filter(spans -> spans.size() >= 2)
-                      .collect(
-                          Collectors.toMap(
-                              spans -> spans.getFirst().text().trim(),
-                              spans -> spans.get(1).text().trim(),
-                              (k, v) -> k,
-                              LinkedHashMap::new));
+                                        bout.setSport(tryGet("sport", boutId,
+                                                () -> b.attr("data-sport")));
 
-              bout.setDetails(details);
-              return bout;
-            })
-        .toList();
-  }
+                                        bout.setDivision(tryGet("division", boutId,
+                                                () -> b.attr("data-division")));
+
+                                        bout.setBoutUrl(tryGet("boutId", boutId,
+                                                () -> b.attr("data-bout-id")));
+
+                                        bout.setMethod(tryGet("method", boutId,
+                                                () -> b.selectFirst("div.\\-rotate-90").text()));
+
+                                        bout.setOpponentId(tryGet("opponentId", boutId,
+                                                () -> lastPathSegment(
+                                                        b.selectFirst("a[title$=Fighter Page]")
+                                                )));
+
+                                        // Bout page
+                                        Try.run(() -> {
+                                                    Element el = b.selectFirst("a[title=Bout Page]");
+                                                    bout.setBoutPageId(lastPathSegment(el));
+                                                    bout.setFightShortDescription(el.text());
+                                                })
+                                                .onFailure(e ->
+                                                        logger.error("Failed extracting bout page data for bout {}", boutId, e));
+
+                                        // Event page
+                                        Try.run(() -> {
+                                                    Element el = b.selectFirst("a[title=Event Page]");
+                                                    bout.setEventPageId(lastPathSegment(el));
+                                                    bout.setEventName(el.text());
+                                                })
+                                                .onFailure(e ->
+                                                        logger.error("Failed extracting event page data for bout {}", boutId, e));
+
+                                        bout.setFighterRecordBeforeFight(
+                                                tryGet("fighterRecordBeforeFight", boutId,
+                                                        () -> b.selectFirst("span[title=Fighter Record Before Fight]").text())
+                                        );
+
+                                        bout.setOpponentRecordBeforeFight(
+                                                tryGet("opponentRecordBeforeFight", boutId,
+                                                        () -> b.selectFirst("span[title=Opponent Record Before Fight]").text())
+                                        );
+
+                                        // Fight date
+                                        Try.run(() -> {
+                                                    Element yearEl = b.select("span.font-bold").stream()
+                                                            .filter(e -> e.text().matches("\\d{4}"))
+                                                            .toList()
+                                                            .getFirst();
+
+                                                    bout.setFightYear(yearEl.text());
+                                                    bout.setFightDay(yearEl.nextElementSibling().text());
+                                                })
+                                                .onFailure(e ->
+                                                        logger.error("Failed extracting fight date for bout {}", boutId, e));
+
+                                        // Details
+                                        bout.setDetails(
+                                                tryGet("details", boutId, () -> {
+                                                    Element detailRows =
+                                                            doc.selectFirst("div#detail-rows-" + bout.getBoutUrl());
+
+                                                    return detailRows.select("> div").stream()
+                                                            .map(row -> row.select("span"))
+                                                            .filter(spans -> spans.size() >= 2)
+                                                            .collect(Collectors.toMap(
+                                                                    spans -> spans.getFirst().text().trim(),
+                                                                    spans -> spans.get(1).text().trim(),
+                                                                    (a, b1) -> a,
+                                                                    LinkedHashMap::new
+                                                            ));
+                                                })
+                                        );
+
+                                        return bout;
+                                    })
+                                    .toList();
+                        }
+                )
+                .onFailure(e -> logger.error("Failed extracting fighterFightResults section", e))
+                .getOrElse(List.of());
+    }
+
+
+    private static <T> T tryGet(String field, String boutId, CheckedFunction0<T> supplier) {
+        return Try.of(supplier)
+                .onFailure(e -> logger.error("Failed extracting {} for bout {}", field, boutId, e))
+                .getOrNull();
+    }
+
+    private static String lastPathSegment(Element element) {
+        return Arrays.stream(element.attr("href").split("/"))
+                .toList()
+                .getLast();
+    }
+
 }
