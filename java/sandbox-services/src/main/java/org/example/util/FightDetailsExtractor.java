@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import io.vavr.CheckedFunction0;
 import io.vavr.control.Try;
 import org.example.entity.Bout;
-import org.example.entity.Fighter;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
@@ -57,7 +56,7 @@ public class FightDetailsExtractor {
                                                     bout.setFightShortDescription(el.text());
                                                 })
                                                 .onFailure(e ->
-                                                        logger.error("Failed extracting bout page data for bout {}", boutId, e));
+                                                        logger.error("Failed extracting bout page data for bout {}", boutId));
 
                                         // Event page
                                         Try.run(() -> {
@@ -66,7 +65,7 @@ public class FightDetailsExtractor {
                                                     bout.setEventName(el.text());
                                                 })
                                                 .onFailure(e ->
-                                                        logger.error("Failed extracting event page data for bout {}", boutId, e));
+                                                        logger.error("Failed extracting event page data for bout {}", boutId));
 
                                         bout.setFighterRecordBeforeFight(
                                                 tryGet("fighterRecordBeforeFight", boutId,
@@ -89,7 +88,7 @@ public class FightDetailsExtractor {
                                                     bout.setFightDay(yearEl.nextElementSibling().text());
                                                 })
                                                 .onFailure(e ->
-                                                        logger.error("Failed extracting fight date for bout {}", boutId, e));
+                                                        logger.error("Failed extracting fight date for bout {}", boutId));
 
                                         // Details
                                         bout.setDetails(
@@ -114,14 +113,14 @@ public class FightDetailsExtractor {
                                     .toList();
                         }
                 )
-                .onFailure(e -> logger.error("Failed extracting fighterFightResults section", e))
+                .onFailure(e -> logger.error("Failed extracting fighterFightResults section"))
                 .getOrElse(List.of());
     }
 
 
     private static <T> T tryGet(String field, String boutId, CheckedFunction0<T> supplier) {
         return Try.of(supplier)
-                .onFailure(e -> logger.error("Failed extracting {} for bout {}", field, boutId, e))
+                .onFailure(e -> logger.error("Failed extracting {} for bout {}", field, boutId))
                 .getOrNull();
     }
 
