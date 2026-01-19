@@ -29,7 +29,7 @@ public class HtmlFetchService {
     @Value("${network.initial-backoff-millis:300000}")
     private int initialBackoffMillis;
 
-    private final Semaphore rateLimiter = new Semaphore(5);
+    //private final Semaphore rateLimiter = new Semaphore(5);
 
     @Autowired
     private RestTemplate restTemplate;
@@ -44,7 +44,7 @@ public class HtmlFetchService {
     public String fetchHtml(String url) {
         for (int attempt = 1; attempt <= countRetryOn503; attempt++) {
             try {
-                rateLimiter.acquire();
+                //rateLimiter.acquire();
                 if (useOkHttp) {
                     return getHtmlAsStringWithOkHttp(url);
                 } else {
@@ -52,12 +52,8 @@ public class HtmlFetchService {
                 }
             } catch (HttpServerErrorException.ServiceUnavailable ex) {
                 backoff(url, initialBackoffMillis, attempt, countRetryOn503);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            } finally {
-                rateLimiter.release();
+            } catch ( Exception e) {
+                logger.error("Other exception", e);
             }
         }
         throw new IllegalStateException("Cannot fetch html from " + url);

@@ -152,4 +152,10 @@ public class Controller {
     tapologyService.persistAllFighterDetails();
     return "Done";
   }
+
+    @GetMapping("/persist-features")
+    public String persistFeatures() {
+        tapologyService.persistFeatures();
+        return "Done";
+    }
 }
