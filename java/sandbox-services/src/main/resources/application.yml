@@ -1,5 +1,6 @@
 spring:
   datasource:
+    driver: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/sandbox
     username: ${DB_USER}
     password: ${DB_PASSWORD}
@@ -9,6 +10,8 @@ spring:
       idle-timeout: 300000
       max-lifetime: 1800000
       connection-timeout: 30000
+      data-source-properties:
+        rewrite-batched-inserts: true
   jpa:
     hibernate:
       ddl-auto: update

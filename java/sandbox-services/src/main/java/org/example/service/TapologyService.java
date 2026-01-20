@@ -1,5 +1,6 @@
 package org.example.service;
 
+import java.sql.Types;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,6 +22,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,9 +37,10 @@ public class TapologyService {
     private final FighterDetailsRepository fighterDetailsRepository;
     private final BoutRepository boutRepository;
     private final BoutFeaturesRepository boutFeaturesRepository;
+    private final JdbcTemplate jdbcTemplate;
     private final Pattern heightPattern = Pattern.compile("(\\d{3})\\s*cm");
     private final Pattern recordPattern = Pattern.compile("(\\d+)-(\\d+)-(\\d+)");
-    private static final int BATCH_SIZE = 1_000;
+    private static final int BATCH_SIZE = 5_000;
 
     public TapologyService(
             HtmlFetchService htmlFetchService,
@@ -45,13 +48,15 @@ public class TapologyService {
             FighterRepository fighterRepository,
             FighterDetailsRepository fighterDetailsRepository,
             BoutRepository boutRepository,
-            BoutFeaturesRepository boutFeaturesRepository) {
+            BoutFeaturesRepository boutFeaturesRepository,
+            JdbcTemplate jdbcTemplate) {
         this.htmlFetchService = htmlFetchService;
         this.resolveDocumentService = resolveDocumentService;
         this.fighterRepository = fighterRepository;
         this.fighterDetailsRepository = fighterDetailsRepository;
         this.boutRepository = boutRepository;
         this.boutFeaturesRepository = boutFeaturesRepository;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     public List<Fighter> listFighters(String url) {
@@ -116,6 +121,7 @@ public class TapologyService {
         log.info("Done delete bout features");
         List<BoutFeatures> features = FeatureWriter.writeFeatures(boutRepository.findAll().stream().filter(f -> "mma".equals(f.getSport())).toList(), fighterDetailsRepository.findAll(), titleBouts);
         log.info("Features are now in memory, start persist");
+        bulkInsert(features);
         saveInBatches(features);
     }
 
@@ -247,6 +253,38 @@ public class TapologyService {
         return result;
     }
 
+    public void bulkInsert(List<BoutFeatures> entities) {
+
+        String sql = """
+                INSERT INTO public.bout_features(
+                    id, age_diff, age_known_diff, days_since_prior_fight_diff, elo_diff, fight_year, has_title_fight_experience_diff, height_diff, height_known_diff, is_amateur_fight, is_title_bout, prior_fight_known_diff, pro_wins_diff, target_win, total_fights_diff, win_streak_diff)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """;
+
+        jdbcTemplate.batchUpdate(
+                sql,
+                entities,
+                BATCH_SIZE,
+                (ps, e) -> {
+                    ps.setString(1, e.getId());
+                    ps.setObject(2, e.getAgeDiff(), Types.REAL);
+                    ps.setObject(3, e.getAgeKnownDiff(), Types.TINYINT);
+                    ps.setObject(4, e.getDaysSincePriorFightDiff(), Types.REAL);
+                    ps.setObject(5, e.getEloDiff(), Types.REAL);
+                    ps.setObject(6, e.getFightYear(), Types.INTEGER);
+                    ps.setObject(7, e.getHasTitleFightExperienceDiff(), Types.TINYINT);
+                    ps.setObject(8, e.getHeightDiff(), Types.REAL);
+                    ps.setObject(9, e.getHeightKnownDiff(), Types.TINYINT);
+                    ps.setObject(10, e.getIsAmateurFight(), Types.TINYINT);
+                    ps.setObject(11, e.getIsTitleBout(), Types.TINYINT);
+                    ps.setObject(12, e.getPriorFightKnownDiff(), Types.TINYINT);
+                    ps.setObject(13, e.getProWinsDiff(), Types.BIGINT);
+                    ps.setObject(14, e.getTargetWin(), Types.TINYINT);
+                    ps.setObject(15, e.getTotalFightsDiff(), Types.INTEGER);
+                    ps.setObject(16, e.getWinStreakDiff(), Types.INTEGER);
+                }
+        );
+    }
 
 
 }
