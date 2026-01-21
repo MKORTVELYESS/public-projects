@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.example.service.*;
-import org.example.util.SystemTimeSource;
 import org.example.util.ThrottleUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +32,6 @@ public class Controller {
   private final PrimeService primeService;
   private final FlightDelayService flightDelayService;
   private final ResolvedTemplateService resolvedTemplateService;
-  private final SystemTimeSource systemTimeSource;
   private final HtmlFetchService htmlFetchService;
   private final TapologyService tapologyService;
 
@@ -43,7 +41,6 @@ public class Controller {
       PrimeService primeService,
       FlightDelayService flightDelayService,
       ResolvedTemplateService resolvedTemplateService,
-      SystemTimeSource systemTimeSource,
       HtmlFetchService htmlFetchService,
       TapologyService tapologyService) {
     this.jilService = jilService;
@@ -51,7 +48,6 @@ public class Controller {
     this.primeService = primeService;
     this.flightDelayService = flightDelayService;
     this.resolvedTemplateService = resolvedTemplateService;
-    this.systemTimeSource = systemTimeSource;
     this.htmlFetchService = htmlFetchService;
     this.tapologyService = tapologyService;
   }
@@ -153,9 +149,9 @@ public class Controller {
     return "Done";
   }
 
-    @GetMapping("/persist-features")
-    public String persistFeatures() {
-        tapologyService.persistFeatures();
-        return "Done";
-    }
+  @GetMapping("/persist-features")
+  public String persistFeatures() {
+    tapologyService.calcAndPersistSymmetricBoutFeatures();
+    return "Done";
+  }
 }

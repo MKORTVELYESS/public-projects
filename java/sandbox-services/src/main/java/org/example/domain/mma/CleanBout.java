@@ -1,176 +1,212 @@
 package org.example.domain.mma;
 
-import io.vavr.control.Try;
-import org.example.entity.Bout;
-import org.example.entity.FighterDetails;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import org.example.entity.Bout;
+import org.jetbrains.annotations.NotNull;
 
-public class CleanBout {
+public class CleanBout implements Comparable<CleanBout> {
 
-    public static final String WIN = "win";
-    public static final char C = ' ';
-    private static final float K = 32f;
-    public static final float DEFAULT_ELO = 1500.0f;
-    public static final String TITLE_BOUT = "Title Bout:";
-    public static final String PRO = "pro";
+  public static final String WIN = "win";
+  public static final char C = ' ';
+  private static final float K = 32f;
+  public static final float DEFAULT_ELO = 1500.0f;
+  public static final String PRO = "pro";
 
-    public static LocalDate parseDate(Bout bout) {
-        String day = bout.getFightDay();     // e.g. "Jan 5"
-        String year = bout.getFightYear();   // e.g. "2024"
+  public static CleanBout fromBout(Bout bout, Set<String> titleBouts) {
+    CleanBout cleanBout = new CleanBout();
 
-        if (day == null || year == null) {
-            return null;
-        }
+    cleanBout.setDate(parseDate(bout));
+    cleanBout.setBoutUrl(bout.getBoutPageId());
+    cleanBout.setWin(WIN.equals(bout.getStatus()));
+    cleanBout.setFighterId(bout.getFighterId());
+    cleanBout.setOpponentId(bout.getOpponentId());
+    cleanBout.setPro(PRO.equals(bout.getDivision()));
+    cleanBout.setTitle(titleBouts.contains(bout.getBoutId()));
+    return cleanBout;
+  }
 
-        // One allocation, exact size
-        StringBuilder sb =
-                new StringBuilder(day.length() + 1 + year.length());
+  private String fighterId;
+  private String opponentId;
+  private String boutUrl;
+  private LocalDate date;
+  private CleanBout fighterPriorBout;
+  private CleanBout opponentPriorBout;
+  private Float postElo;
+  private Boolean isWin;
+  private Boolean isPro;
+  private Boolean isTitle;
 
-        sb.append(day).append(C).append(year);
+  public LocalDate getDate() {
+    return date;
+  }
 
-        try {
-            return LocalDate.parse(sb, FeatureWriter.BOUT_DATE_FORMAT);
-        } catch (DateTimeParseException e) {
-            return null;
-        }
+  public void setDate(LocalDate date) {
+    this.date = date;
+  }
+
+  public String getBoutUrl() {
+    return boutUrl;
+  }
+
+  public void setBoutUrl(String boutUrl) {
+    this.boutUrl = boutUrl;
+  }
+
+  public Float getPostElo() {
+    if (postElo == null) {
+      computePostFightElo();
     }
-    public static CleanBout fromBout(Bout bout, Set<String> titleBouts) {
-        CleanBout cleanBout = new CleanBout();
+    return postElo;
+  }
 
-        cleanBout.setDate(parseDate(bout));
-        cleanBout.setBoutUrl(bout.getBoutPageId());
-        cleanBout.setWin(WIN.equals(bout.getStatus()));
-        cleanBout.setFighterId(bout.getFighterId());
-        cleanBout.setOpponentId(bout.getOpponentId());
-        cleanBout.setPro(PRO.equals(bout.getDivision()));
-        cleanBout.setTitle(titleBouts.contains(bout.getBoutId()));
-        bout = null;
-        return cleanBout;
-    }
+  public CleanBout getFighterPriorBout() {
+    return fighterPriorBout;
+  }
 
+  public CleanBout getOpponentPriorBout() {
+    return opponentPriorBout;
+  }
 
-    private String fighterId;
-    private String opponentId;
-    private String boutUrl;
-    private LocalDate date;
-    private CleanBout fighterPriorBout;
-    private CleanBout opponentPriorBout;
-    private Float postElo;
-    private Boolean isWin;
-    private Boolean isPro;
-    private Boolean isTitle;
+  public Boolean getWin() {
+    return isWin;
+  }
 
-    public LocalDate getDate() {
-        return date;
-    }
+  public void setWin(Boolean win) {
+    isWin = win;
+  }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
+  public Boolean getPro() {
+    return isPro;
+  }
 
-    public String getBoutUrl() {
-        return boutUrl;
-    }
+  public void setPro(Boolean pro) {
+    isPro = pro;
+  }
 
-    public void setBoutUrl(String boutUrl) {
-        this.boutUrl = boutUrl;
-    }
+  public String getFighterId() {
+    return fighterId;
+  }
 
-    public Float getPostElo() {
-        if (postElo == null) {
-            computePostFightElo();
-        }
-        return postElo;
-    }
+  public void setFighterId(String fighterId) {
+    this.fighterId = fighterId;
+  }
 
-    public CleanBout getFighterPriorBout() {
-        return fighterPriorBout;
-    }
+  public String getOpponentId() {
+    return opponentId;
+  }
 
-    public CleanBout getOpponentPriorBout() {
-        return opponentPriorBout;
-    }
+  public void setOpponentId(String opponentId) {
+    this.opponentId = opponentId;
+  }
 
-    public Boolean getWin() {
-        return isWin;
-    }
+  public void setFighterPriorBout(CleanBout fighterPriorBout) {
+    this.fighterPriorBout = fighterPriorBout;
+  }
 
-    public void setWin(Boolean win) {
-        isWin = win;
-    }
+  public void setOpponentPriorBout(CleanBout opponentPriorBout) {
+    this.opponentPriorBout = opponentPriorBout;
+  }
 
-    public Boolean getPro() {
-        return isPro;
-    }
+  public Boolean getTitle() {
+    return isTitle;
+  }
 
-    public void setPro(Boolean pro) {
-        isPro = pro;
-    }
+  public void setTitle(Boolean title) {
+    isTitle = title;
+  }
 
-    public String getFighterId() {
-        return fighterId;
-    }
+  public static LocalDate parseDate(Bout bout) {
+    String day = bout.getFightDay(); // e.g. "Jan 5"
+    String year = bout.getFightYear(); // e.g. "2024"
 
-    public void setFighterId(String fighterId) {
-        this.fighterId = fighterId;
-    }
-
-    public String getOpponentId() {
-        return opponentId;
-    }
-
-    public void setOpponentId(String opponentId) {
-        this.opponentId = opponentId;
-    }
-
-    public void setFighterPriorBout(CleanBout fighterPriorBout) {
-        this.fighterPriorBout = fighterPriorBout;
+    if (day == null || year == null) {
+      return null;
     }
 
-    public void setOpponentPriorBout(CleanBout opponentPriorBout) {
-        this.opponentPriorBout = opponentPriorBout;
+    StringBuilder sb = new StringBuilder(day.length() + 1 + year.length());
+
+    sb.append(day).append(C).append(year);
+
+    try {
+      return LocalDate.parse(sb, FeatureWriter.BOUT_DATE_FORMAT);
+    } catch (DateTimeParseException e) {
+      return null;
     }
+  }
 
-    public Boolean getTitle() {
-        return isTitle;
+  private void computePostFightElo() {
+    if (getFighterPriorBout() == null) {
+      this.postElo = DEFAULT_ELO;
+      return;
     }
+    float oppElo = opponentPriorBout != null ? opponentPriorBout.getPostElo() : DEFAULT_ELO;
+    float myElo = fighterPriorBout != null ? fighterPriorBout.getPostElo() : DEFAULT_ELO;
 
-    public void setTitle(Boolean title) {
-        isTitle = title;
-    }
+    float s = Boolean.TRUE.equals(getWin()) ? 1.0f : 0.0f;
+    float p = expectedWinProbability(oppElo, myElo);
+    this.postElo = myElo + K * (s - p);
+  }
 
-    private void computePostFightElo() {
-        if (getFighterPriorBout() == null) {
-            this.postElo = DEFAULT_ELO;
-            return;
-        }
-        float oppElo = opponentPriorBout != null
-                ? opponentPriorBout.getPostElo()
-                : DEFAULT_ELO;
-        float myElo = fighterPriorBout.getPostElo();
+  private static float expectedWinProbability(Float oppElo, Float myElo) {
+    double exponent = (oppElo - myElo) / 400.0;
+    return (float) (1.0 / (1.0 + Math.pow(10.0, exponent)));
+  }
 
-        float s = Boolean.TRUE.equals(getWin()) ? 1.0f : 0.0f;
-        float p = expectedWinProbability(oppElo, myElo);
-        this.postElo = myElo + K * (s - p);
+  public Float getEloDiff() {
+    float fighterPostElo = fighterPriorBout != null ? fighterPriorBout.getPostElo() : DEFAULT_ELO;
+    float opponentPostElo =
+        opponentPriorBout != null ? opponentPriorBout.getPostElo() : DEFAULT_ELO;
 
-    }
+    return fighterPostElo - opponentPostElo;
+  }
 
-    private static float expectedWinProbability(Float oppElo, Float myElo) {
-        double exponent = (oppElo - myElo) / 400.0;
-        return (float) (1.0 / (1.0 + Math.pow(10.0, exponent)));
-    }
+  public boolean isIdentifiable() {
+    return this.getBoutUrl() != null && this.getFighterId() != null;
+  }
 
-    public Float getEloDiff() {
-        float fighterPostElo = Objects.nonNull(fighterPriorBout) ? fighterPriorBout.getPostElo() : DEFAULT_ELO;
-        float opponentPostElo = Objects.nonNull(opponentPriorBout) ? opponentPriorBout.getPostElo() : DEFAULT_ELO;
+  public String getFeatureId() {
+    return this.getBoutUrl().concat("-").concat(this.getFighterId());
+  }
 
-        return fighterPostElo - opponentPostElo;
-    }
+  @Override
+  public int compareTo(@NotNull CleanBout o) {
+    return Comparator.comparing(
+            CleanBout::getDate, Comparator.nullsFirst(Comparator.naturalOrder()))
+        .thenComparing(CleanBout::getFighterId)
+        .thenComparing(CleanBout::getOpponentId)
+        .thenComparing(CleanBout::getBoutUrl)
+        .compare(this, o);
+  }
 
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof CleanBout cleanBout)) return false;
+    return Objects.equals(getFighterId(), cleanBout.getFighterId())
+        && Objects.equals(getOpponentId(), cleanBout.getOpponentId())
+        && Objects.equals(getBoutUrl(), cleanBout.getBoutUrl())
+        && Objects.equals(getDate(), cleanBout.getDate())
+        && Objects.equals(getFighterPriorBout(), cleanBout.getFighterPriorBout())
+        && Objects.equals(getOpponentPriorBout(), cleanBout.getOpponentPriorBout())
+        && Objects.equals(getPostElo(), cleanBout.getPostElo())
+        && Objects.equals(isWin, cleanBout.isWin)
+        && Objects.equals(isPro, cleanBout.isPro)
+        && Objects.equals(isTitle, cleanBout.isTitle);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        getFighterId(),
+        getOpponentId(),
+        getBoutUrl(),
+        getDate(),
+        getFighterPriorBout(),
+        getOpponentPriorBout(),
+        getPostElo(),
+        isWin,
+        isPro,
+        isTitle);
+  }
 }

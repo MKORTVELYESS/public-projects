@@ -40,8 +40,10 @@ public class Bout {
     return id;
   }
 
-  public void setId(String id) {
-    this.id = id;
+  private void setId() {
+    if (this.fighterId != null && this.boutId != null) {
+      this.id = this.fighterId.concat("-").concat(this.boutId);
+    }
   }
 
   public String getSport() {
@@ -66,6 +68,7 @@ public class Bout {
 
   public void setBoutId(String boutId) {
     this.boutId = boutId;
+    setId();
   }
 
   public String getMethod() {
@@ -76,15 +79,16 @@ public class Bout {
     this.method = method;
   }
 
-    public String getFighterId() {
-        return fighterId;
-    }
+  public String getFighterId() {
+    return fighterId;
+  }
 
-    public void setFighterId(String fighterId) {
-        this.fighterId = fighterId;
-    }
+  public void setFighterId(String fighterId) {
+    this.fighterId = fighterId;
+    setId();
+  }
 
-    public String getOpponentId() {
+  public String getOpponentId() {
     return opponentId;
   }
 
@@ -162,6 +166,10 @@ public class Bout {
 
   public void setDetails(Map<String, String> details) {
     this.details = new LinkedHashMap<>(details);
+  }
+
+  public boolean isWinOrLoss() {
+    return "win".equals(this.getStatus()) || "loss".equals(this.getStatus());
   }
 
   @Override

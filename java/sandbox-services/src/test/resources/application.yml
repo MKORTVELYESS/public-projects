@@ -4,9 +4,20 @@ spring:
     driver-class-name: org.h2.Driver
     username: sa
     password:
+    driver: org.h2.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      idle-timeout: 300000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      data-source-properties:
+        rewrite-batched-inserts: true
   jpa:
     hibernate:
       ddl-auto: create-drop
+      jdbc:
+        batch_size: 5000
     show-sql: true
 flight-delay:
   filepath: ${user.dir}/src/test/resources/data/flight_data_2024_sample.csv
