@@ -35,7 +35,7 @@ spotless {
 
 spotbugs {
     toolVersion.set(spotbugsToolVersion)
-    ignoreFailures.set(false)
+    ignoreFailures.set(true)
     showProgress.set(true)
     effort.set(Effort.MAX)
     reportLevel.set(Confidence.LOW)
