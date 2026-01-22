@@ -1,23 +1,23 @@
 package org.example;
 
+import static org.example.JsonCompareUtil.compareJsonAndList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.IntStream;
 import org.example.controller.Controller;
-import org.example.entity.HttpRequestLog;
-import org.example.entity.Prime;
-import org.example.repository.HttpRequestLogRepository;
-import org.example.repository.PrimeRepository;
+import org.example.entity.*;
+import org.example.repository.*;
+import org.example.service.HtmlFetchService;
+import org.example.service.TapologyService;
 import org.example.util.DateTimeUtil;
 import org.example.util.SystemTimeSource;
 import org.junit.jupiter.api.Test;
@@ -58,6 +58,11 @@ class ControllerTest {
   @Autowired private HttpRequestLogRepository logRepository;
   @Autowired private PrimeRepository primeRepository;
   @Autowired private MockMvc mockMvc;
+  @Autowired private FighterRepository fighterRepository;
+  @Autowired private FighterDetailsRepository fighterDetailsRepository;
+  @Autowired private BoutRepository boutRepository;
+  @Autowired private TapologyService tapologyService;
+  @Autowired private HtmlFetchService htmlFetchService;
 
   private RequestPostProcessor remoteAddr(String ip) {
     return request -> {
@@ -247,5 +252,52 @@ class ControllerTest {
     String actual = r.getResponse().getContentAsString();
     String expected = Files.readString(expectedFilePath, StandardCharsets.UTF_8);
     assertEquals(expected, actual);
+  }
+
+  @Test
+  void persistAllFighterDetails() throws Exception {
+    // given
+    final String FIGHTER_DETAILS_BASE_URL = "https://www.tapology.com/fightcenter/fighters/";
+
+    var fighterListPageHtmlFileName = "fighter-list-grid-1.html";
+    mockFetchHtml(fighterListPageHtmlFileName, fighterListPageHtmlFileName);
+    mockFetchHtml(
+        FIGHTER_DETAILS_BASE_URL.concat("314900-ryan-dobinson"), "314900-ryan-dobinson.html");
+    mockFetchHtml(FIGHTER_DETAILS_BASE_URL.concat("377781-jack-bangs"), "377781-jack-bangs.html");
+    mockFetchHtml(
+        FIGHTER_DETAILS_BASE_URL.concat("444966-george-plevin"), "444966-george-plevin.html");
+    mockFetchHtml(FIGHTER_DETAILS_BASE_URL.concat("467881-bilal-omari"), "467881-bilal-omari.html");
+    List<Fighter> fighters =
+        new ArrayList<>(tapologyService.listFighters(fighterListPageHtmlFileName));
+    fighterRepository.saveAll(fighters);
+    when(mockSystemTimeSource.currentTime()).thenReturn(testTime.toLocalDateTime());
+
+    // when
+    mockMvc
+        .perform(MockMvcRequestBuilders.get("/api/persist-fighter-details"))
+        .andExpect(MockMvcResultMatchers.status().isOk());
+
+    // then
+    List<FighterDetails> actualFighterDetails =
+        fighterDetailsRepository.findAll().stream()
+            .sorted(Comparator.comparing(FighterDetails::getFighterId))
+            .toList();
+    List<Bout> actualBoutData =
+        boutRepository.findAll().stream()
+            .peek(Bout::unsetDetails)
+            .sorted(Comparator.comparing(Bout::getBoutId).thenComparing(Bout::getFighterId))
+            .toList();
+    String expectedFighterDetails =
+        TestUtils.getTestFileContent("data/mma/expected/fighter-details-1.txt");
+    String expectedBoutData = TestUtils.getTestFileContent("data/mma/expected/bouts-1.txt");
+
+    assertTrue(compareJsonAndList(expectedFighterDetails, actualFighterDetails));
+    assertTrue(compareJsonAndList(expectedBoutData, actualBoutData));
+  }
+
+  void mockFetchHtml(String url, String fName) throws IOException {
+
+    when(htmlFetchService.fetchHtml(url))
+        .thenReturn(TestUtils.getTestFileContent("data/mma/pages/" + fName));
   }
 }

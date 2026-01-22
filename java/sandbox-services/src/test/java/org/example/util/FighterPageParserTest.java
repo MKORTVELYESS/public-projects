@@ -1,11 +1,10 @@
 package org.example.util;
 
+import static org.example.TestUtils.getTestFileContent;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Objects;
 import org.example.entity.Bout;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -15,14 +14,7 @@ class FighterPageParserTest {
 
   @Test
   void testParseBouts() throws IOException {
-    String html =
-        new String(
-            Objects.requireNonNull(
-                    getClass()
-                        .getClassLoader()
-                        .getResourceAsStream("data/314900-ryan-dobinson.html"))
-                .readAllBytes(),
-            StandardCharsets.UTF_8);
+    String html = getTestFileContent("data/314900-ryan-dobinson.html");
     Document doc = Jsoup.parse(html);
     List<Bout> bout = FighterPageParser.parseBouts(doc);
     String expected =

@@ -10,16 +10,15 @@ import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.example.domain.mma.FeatureWriter;
 import org.example.entity.*;
 import org.example.entity.mma.BoutFeatures;
-import org.example.repository.BoutFeaturesRepository;
-import org.example.repository.BoutRepository;
-import org.example.repository.FighterDetailsRepository;
-import org.example.repository.FighterRepository;
+import org.example.repository.*;
 import org.example.util.FighterPageParser;
+import org.example.util.SystemTimeSource;
 import org.jetbrains.annotations.NotNull;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +38,8 @@ public class TapologyService {
   private final Pattern heightPattern = Pattern.compile("(\\d{3})\\s*cm");
   private final Pattern recordPattern = Pattern.compile("(\\d+)-(\\d+)-(\\d+)");
   private static final int BATCH_SIZE = 5_000;
+
+  @Autowired private SystemTimeSource timeSource;
 
   public TapologyService(
       HtmlFetchService htmlFetchService,
@@ -100,10 +101,18 @@ public class TapologyService {
     log.info("Fetched: {}", url);
     Document document = resolveDocumentService.resolveDocument(html);
     log.info("Resolved: {}", fighter.getId());
-    fighterDetailsRepository.save(FighterPageParser.parseDetails(document));
+    fighterDetailsRepository.save(getFighterDetails(document, url));
     log.info("Saved details: {}", fighter.getId());
     boutRepository.saveAll(FighterPageParser.parseBouts(document));
     log.info("Saved bouts: {}", fighter.getId());
+  }
+
+  @NotNull
+  private FighterDetails getFighterDetails(Document document, String url) {
+    FighterDetails entity = FighterPageParser.parseDetails(document);
+    entity.setSnapTime(timeSource.currentTime());
+    entity.setSourceUrl(url);
+    return entity;
   }
 
   @NotNull
@@ -260,10 +269,10 @@ public class TapologyService {
 
     String sql =
         """
-                INSERT INTO public.bout_features(
-                    id, age_diff, age_known_diff, days_since_prior_fight_diff, elo_diff, fight_year, has_title_fight_experience_diff, height_diff, height_known_diff, is_amateur_fight, is_title_bout, prior_fight_known_diff, pro_wins_diff, target_win, total_fights_diff, win_streak_diff)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """;
+                        INSERT INTO public.bout_features(
+                            id, age_diff, age_known_diff, days_since_prior_fight_diff, elo_diff, fight_year, has_title_fight_experience_diff, height_diff, height_known_diff, is_amateur_fight, is_title_bout, prior_fight_known_diff, pro_wins_diff, target_win, total_fights_diff, win_streak_diff)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        """;
 
     jdbcTemplate.batchUpdate(
         sql,

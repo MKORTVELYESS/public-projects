@@ -3,6 +3,7 @@ package org.example.util;
 import io.vavr.CheckedFunction0;
 import io.vavr.control.Try;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -18,6 +19,8 @@ import org.slf4j.LoggerFactory;
 
 public class FighterPageParser {
   private static final Logger logger = LoggerFactory.getLogger(FighterPageParser.class);
+  private static final DateTimeFormatter FIGHTER_DOB_DATE_FORMAT =
+      DateTimeFormatter.ofPattern("yyyy MMM dd", Locale.ENGLISH);
 
   // element parsing constants
   private static final String DIV_DATA_FIGHTER_BOUT_TARGET_BOUT =
@@ -256,6 +259,7 @@ public class FighterPageParser {
     for (String key : keys) {
       Element el = root.selectFirst("strong:contains(" + key + ")");
       if (el != null) {
+        if ("Reach".equals(key) && el.parent() != null) el = el.parent();
         Element value = el.nextElementSibling();
         if (value != null) {
           details.attributes.put(key, value.text().trim());
@@ -268,6 +272,13 @@ public class FighterPageParser {
     return label.replace(":", "").trim();
   }
 
+  public static long parseAmountToLong(String input) {
+    // Remove everything except digits and optional minus sign
+    String cleaned = input.replaceAll("[^0-9-]", "");
+
+    return cleaned.isEmpty() ? 0L : Long.parseLong(cleaned);
+  }
+
   public static FighterDetails parseDetails(Document doc) {
     FighterRawDetails r = extract(doc);
 
@@ -277,15 +288,17 @@ public class FighterPageParser {
     f.setGivenName(r.attributes.get("Name"));
     f.setNickname(r.attributes.get("Nickname"));
     f.setProMmaRecord(r.attributes.get("Pro MMA Record"));
-    f.setCurrentMmaStreak(r.attributes.get("Current Streak"));
+    f.setCurrentMmaStreak(r.attributes.get("Current MMA Streak"));
     f.setHeight(r.attributes.get("Height"));
     f.setReach(r.attributes.get("Reach"));
     f.setWeightClass(r.attributes.get("Weight Class"));
     f.setAffiliation(r.attributes.get("Affiliation"));
     f.setBornIn(r.attributes.get("Born"));
-    Try.of(() -> LocalDate.parse(r.attributes.get("Age"))).andThen(f::setDateOfBirth);
+    Try.of(() -> parseAmountToLong(r.attributes.get("Career Disclosed Earnings")))
+        .andThen(f::setCareerEarningsUsd);
+    Try.of(() -> LocalDate.parse(r.attributes.get("| Date of Birth"), FIGHTER_DOB_DATE_FORMAT))
+        .andThen(f::setDateOfBirth);
     f.setFightingOutOf(r.attributes.get("Fighting out of"));
-    f.setLastFight(r.attributes.get("Last Fight"));
     f.setExtraAttributes(r.attributes); // full raw snapshot
 
     return f;

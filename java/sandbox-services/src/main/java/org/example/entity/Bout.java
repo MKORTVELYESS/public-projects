@@ -168,6 +168,10 @@ public class Bout {
     this.details = new LinkedHashMap<>(details);
   }
 
+  public void unsetDetails() {
+    this.details = new LinkedHashMap<>();
+  }
+
   public boolean isWinOrLoss() {
     return "win".equals(this.getStatus()) || "loss".equals(this.getStatus());
   }

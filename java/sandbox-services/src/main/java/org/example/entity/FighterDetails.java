@@ -2,6 +2,7 @@ package org.example.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -26,10 +27,6 @@ public class FighterDetails {
 
   private String weightClass;
 
-  private Double lastWeighIn;
-
-  private Integer age;
-
   private LocalDate dateOfBirth;
 
   private String bornIn;
@@ -37,8 +34,6 @@ public class FighterDetails {
   private String fightingOutOf;
 
   private String affiliation;
-
-  private String lastFight;
 
   private Long careerEarningsUsd;
 
@@ -49,7 +44,7 @@ public class FighterDetails {
   //    @OneToMany(mappedBy = "fighter", cascade = CascadeType.ALL, orphanRemoval = true)
   //    private Set<FighterLink> links;
 
-  private String source;
+  private LocalDateTime snapTime;
 
   private String sourceUrl;
 
@@ -85,14 +80,6 @@ public class FighterDetails {
     return weightClass;
   }
 
-  public Double getLastWeighIn() {
-    return lastWeighIn;
-  }
-
-  public Integer getAge() {
-    return age;
-  }
-
   public LocalDate getDateOfBirth() {
     return dateOfBirth;
   }
@@ -109,10 +96,6 @@ public class FighterDetails {
     return affiliation;
   }
 
-  public String getLastFight() {
-    return lastFight;
-  }
-
   public Long getCareerEarningsUsd() {
     return careerEarningsUsd;
   }
@@ -121,8 +104,8 @@ public class FighterDetails {
     return new HashMap<>(extraAttributes);
   }
 
-  public String getSource() {
-    return source;
+  public LocalDateTime getSnapTime() {
+    return snapTime;
   }
 
   public String getSourceUrl() {
@@ -153,20 +136,12 @@ public class FighterDetails {
     this.reach = reach;
   }
 
-  public void setLastWeighIn(Double lastWeighIn) {
-    this.lastWeighIn = lastWeighIn;
-  }
-
   public void setHeight(String height) {
     this.height = height;
   }
 
   public void setWeightClass(String weightClass) {
     this.weightClass = weightClass;
-  }
-
-  public void setAge(Integer age) {
-    this.age = age;
   }
 
   public void setDateOfBirth(LocalDate dateOfBirth) {
@@ -185,10 +160,6 @@ public class FighterDetails {
     this.affiliation = affiliation;
   }
 
-  public void setLastFight(String lastFight) {
-    this.lastFight = lastFight;
-  }
-
   public void setCareerEarningsUsd(Long careerEarningsUsd) {
     this.careerEarningsUsd = careerEarningsUsd;
   }
@@ -197,8 +168,8 @@ public class FighterDetails {
     this.extraAttributes = new HashMap<>(extraAttributes);
   }
 
-  public void setSource(String source) {
-    this.source = source;
+  public void setSnapTime(LocalDateTime snapTime) {
+    this.snapTime = snapTime;
   }
 
   public void setSourceUrl(String sourceUrl) {
