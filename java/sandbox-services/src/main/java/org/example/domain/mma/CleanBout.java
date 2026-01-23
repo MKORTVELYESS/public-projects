@@ -172,12 +172,15 @@ public class CleanBout implements Comparable<CleanBout> {
 
   @Override
   public int compareTo(@NotNull CleanBout o) {
-    return Comparator.comparing(
-            CleanBout::getDate, Comparator.nullsFirst(Comparator.naturalOrder()))
-        .thenComparing(CleanBout::getFighterId)
-        .thenComparing(CleanBout::getOpponentId)
-        .thenComparing(CleanBout::getBoutUrl)
-        .compare(this, o);
+    Comparator<CleanBout> comparator =
+        Comparator.comparing(CleanBout::getDate, Comparator.nullsFirst(Comparator.naturalOrder()))
+            .thenComparing(
+                CleanBout::getFighterId, Comparator.nullsFirst(Comparator.naturalOrder()))
+            .thenComparing(
+                CleanBout::getOpponentId, Comparator.nullsFirst(Comparator.naturalOrder()))
+            .thenComparing(CleanBout::getBoutUrl, Comparator.nullsFirst(Comparator.naturalOrder()));
+
+    return comparator.compare(this, o);
   }
 
   @Override
