@@ -134,12 +134,12 @@ public class TapologyService {
   }
 
   @NotNull
-  private Set<String> getTitleBoutsKeys() {
+  public Set<String> getTitleBoutsKeys() {
     return getTitleBouts().keySet();
   }
 
   @NotNull
-  private List<FighterDetails> getAllFightersDetails() {
+  public List<FighterDetails> getAllFightersDetails() {
     return fighterDetailsRepository.findAll();
   }
 
@@ -148,7 +148,7 @@ public class TapologyService {
   }
 
   @NotNull
-  private List<Bout> getAllMMABouts() {
+  public List<Bout> getAllMMABouts() {
     return boutRepository.findAll().stream().filter(f -> "mma".equals(f.getSport())).toList();
   }
 
@@ -253,7 +253,7 @@ public class TapologyService {
         fighter.getNation());
   }
 
-  public Map<String, String> getTitleBouts() {
+  private Map<String, String> getTitleBouts() {
     List<Object[]> rows = boutRepository.findBoutDetailsByKey("Title Bout:");
 
     Map<String, String> result = new HashMap<>(rows.size() * 4 / 3);

@@ -23,7 +23,7 @@ public class CleanBout implements Comparable<CleanBout> {
     cleanBout.setFighterId(bout.getFighterId());
     cleanBout.setOpponentId(bout.getOpponentId());
     cleanBout.setPro(PRO.equals(bout.getDivision()));
-    cleanBout.setTitle(titleBouts.contains(bout.getBoutId()));
+    cleanBout.setTitle(titleBouts.contains(bout.getId()));
     return cleanBout;
   }
 

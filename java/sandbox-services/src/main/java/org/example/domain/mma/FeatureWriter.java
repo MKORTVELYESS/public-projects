@@ -15,7 +15,7 @@ public class FeatureWriter {
       DateTimeFormatter.ofPattern("MMM d yyyy", Locale.ENGLISH);
   private static final Logger log = LoggerFactory.getLogger(FeatureWriter.class);
 
-  public static List<BoutFeatures> compose(
+  public static List<BoutFeatures>  compose(
       List<Bout> allBouts, List<FighterDetails> allFighterDetails, Set<String> titleBouts) {
     log.info("Start building bout history");
     Set<CleanBout> data = BoutHistoryBuilder.buildBoutHistory(allBouts, titleBouts);
