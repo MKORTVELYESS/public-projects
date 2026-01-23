@@ -312,7 +312,6 @@ class ControllerTest {
 
     void calcFightFeatures() throws Exception {
 
-
         List<Bout> allMMA = tapologyService.getAllMMABouts();
         List<FighterDetails>  allDetails = tapologyService.getAllFightersDetails();
 
@@ -325,7 +324,7 @@ class ControllerTest {
 
         Set<String> titleBouts = tapologyService.getTitleBoutsKeys();
         List<BoutFeatures> actualFeatures = FeatureWriter.compose(allMMA, allDetails, titleBouts);
-        String json = JsonCompareUtil.mapper.writeValueAsString(actualFeatures);
+
         String expectedFeatures = TestUtils.getTestFileContent("data/mma/expected/features-1.txt");
 
         assertTrue(compareJsonAndList(expectedFeatures, actualFeatures));
