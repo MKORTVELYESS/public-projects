@@ -315,7 +315,11 @@ class ControllerTest {
             });
 
     Set<String> titleBouts = tapologyService.getTitleBoutsKeys();
-    List<BoutFeatures> actualFeatures = FeatureWriter.compose(allMMA, allDetails, titleBouts);
+    List<BoutFeatures> actualFeatures =
+        FeatureWriter.compose(allMMA, allDetails, titleBouts).stream()
+            .sorted(
+                Comparator.comparing(BoutFeatures::getId).thenComparing(BoutFeatures::getTargetWin))
+            .toList();
 
     String expectedFeatures = TestUtils.getTestFileContent("data/mma/expected/features-1.txt");
 

@@ -186,27 +186,18 @@ public class CleanBout implements Comparable<CleanBout> {
     return Objects.equals(getFighterId(), cleanBout.getFighterId())
         && Objects.equals(getOpponentId(), cleanBout.getOpponentId())
         && Objects.equals(getBoutUrl(), cleanBout.getBoutUrl())
-        && Objects.equals(getDate(), cleanBout.getDate())
-        && Objects.equals(getFighterPriorBout(), cleanBout.getFighterPriorBout())
-        && Objects.equals(getOpponentPriorBout(), cleanBout.getOpponentPriorBout())
-        && Objects.equals(getPostElo(), cleanBout.getPostElo())
-        && Objects.equals(isWin, cleanBout.isWin)
-        && Objects.equals(isPro, cleanBout.isPro)
-        && Objects.equals(isTitle, cleanBout.isTitle);
+        && Objects.equals(getDate(), cleanBout.getDate());
+    // && Objects.equals(getPostElo(), cleanBout.getPostElo()) - lazily initiated field can only
+    // be called after prior bouts are se, this will call it accidentally
+
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(
-        getFighterId(),
-        getOpponentId(),
-        getBoutUrl(),
-        getDate(),
-        getFighterPriorBout(),
-        getOpponentPriorBout(),
-        getPostElo(),
-        isWin,
-        isPro,
-        isTitle);
+        getFighterId(), getOpponentId(), getBoutUrl(), getDate()
+        // getPostElo(), - lazily initiated field can only be called after prior bouts are set, this
+        // would call it accidentally
+        );
   }
 }
